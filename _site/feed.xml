@@ -1,0 +1,1989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title></title>
+    <description>爱生命爱折腾,从事互联网</description>
+    <link>https://kaizamm.github.io/</link>
+    <atom:link href="https://kaizamm.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 09 Feb 2018 09:54:51 +0800</pubDate>
+    <lastBuildDate>Fri, 09 Feb 2018 09:54:51 +0800</lastBuildDate>
+    <generator>Jekyll v3.7.2</generator>
+    
+      <item>
+        <title>calligraphy</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#zhugeliang&quot; id=&quot;markdown-toc-zhugeliang&quot;&gt;诫子书&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;First POST build by Jekyll.&lt;/p&gt;
+
+&lt;h2 id=&quot;zhugeliang&quot;&gt;诫子书&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/styles/images/jiezishu.jpg&quot; alt=&quot;诫子书&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#&quot;&gt;诸葛亮&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;夫君子之行，静以修身，俭以养德。非淡泊(澹泊)无以明志，非宁静无以致远。夫学须静也，才须学也。非学无以广才，非志无以成学。淫慢则不能励精，险躁则不能冶性。
+年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及！&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 09 Feb 2018 00:31:01 +0800</pubDate>
+        <link>https://kaizamm.github.io/2018/02/09/calligraphy/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2018/02/09/calligraphy/</guid>
+        
+        <category>enjoy</category>
+        
+        
+        <category>entertainment</category>
+        
+      </item>
+    
+      <item>
+        <title>scrapy进阶</title>
+        <description>&lt;h3 id=&quot;item-pipeline&quot;&gt;Item Pipeline&lt;/h3&gt;
+&lt;p&gt;当Item在Spider中被收集之后，它将会被传递到Item Pipeline，一些组件会按照一定的顺序执行对Item的处理，每个item pipeline组件是实现了简单方法的python类。他们接收到Item并通过它执行一些行为，同时也决定此Item是否继续通过pipeline，或是被丢弃而不再进行处理。以下是item pipeline的一些典型应用：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;清理HTML数据&lt;/li&gt;
+  &lt;li&gt;验证爬取的数据，检查item包含某些字段&lt;/li&gt;
+  &lt;li&gt;查重并丢弃&lt;/li&gt;
+  &lt;li&gt;将爬取结果保存到数据库中&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;编写你的item-pipeline&quot;&gt;编写你的item pipeline&lt;/h3&gt;
+&lt;p&gt;每个item pipeline都是一个独立的python类&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;process_item(item,spider)
+# item： Item对象，被爬取的item
+# spider: Spider对象，被爬取该item的spider
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;每个item pipeline都需要调用该方法，这个方法必须返回一个item对象，或是抛出DropItem异常，被丢弃的item将不会被之后的pipeline组件所处理。&lt;/p&gt;
+
+&lt;p&gt;也可以实现以下方法：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;open_spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 当spider开启时，这个方法被调用&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;close_spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 当spider关闭时，这个方法被调用&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;样例&quot;&gt;样例&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;验证价格，同时丢弃没有价格的item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;让我们来看一下以下这个假设的pipeline，它为那些不含税(price_excludes_vat 属性)的item调整了 price 属性，同时丢弃了那些没有价格的item:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from scrapy.exceptions import DropItem
+
+class PricePipeline(object):
+
+    vat_factor = 1.15
+
+    def process_item(self, item, spider):
+        if item['price']:
+            if item['price_excludes_vat']:
+                item['price'] = item['price'] * self.vat_factor
+            return item
+        else:
+            raise DropItem(&quot;Missing price in %s&quot; % item)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;将item写入JSON文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以下pipeline将所有(从所有spider中)爬取到的item，存储到一个独立地 items.jl 文件，每行包含一个序列化为JSON格式的item:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;json&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;JsonWriterPipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'items.jl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'wb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;process_item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dumps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;JsonWriterPipeline的目的只是为了介绍怎样编写item pipeline，如果你想要将所有爬取的item都保存到同一个JSON文件， 你需要使用 Feed exports 。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;去重&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一个用于去重的过滤器，丢弃那些已经被处理过的item。让我们假设我们的item有一个唯一的id，但是我们spider返回的多个item中包含有相同的id:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy.exceptions&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DropItem&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DuplicatesPipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ids_seen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;process_item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ids_seen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DropItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Duplicate item found: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ids_seen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;启用一个Item Pipeline组件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;为了启用一个Item Pipeline组件，你必须将它的类添加到 ITEM_PIPELINES 配置，就像下面这个例子:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ITEM_PIPELINES = {
+    'myproject.pipelines.PricePipeline': 300,
+    'myproject.pipelines.JsonWriterPipeline': 800,
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;分配给每个类的整型值，确定了他们运行的顺序，item按数字从低到高的顺序，通过pipeline，通常将这些数字定义在0-1000范围内。&lt;/p&gt;
+
+&lt;h3 id=&quot;feed-exports&quot;&gt;Feed exports&lt;/h3&gt;
+&lt;p&gt;实现爬虫时最经常提到的需求就是能合适的保存爬取到的数据，或者说，生成一个带有爬取数据的”输出文件”(通常叫做”输出feed”)，来供其他系统使用。scrapy自带了Feed输出，并且支持多种序列化格式及存储方式。&lt;/p&gt;
+&lt;h4 id=&quot;序列化方式&quot;&gt;序列化方式&lt;/h4&gt;
+&lt;p&gt;feed输出使用到item exporters。其自带支持类型有：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;JSON：使用JsonItemExplorter&lt;/li&gt;
+  &lt;li&gt;JSON lines: JsonLinesItemExporter&lt;/li&gt;
+  &lt;li&gt;CSV: CsvItemExporter&lt;/li&gt;
+  &lt;li&gt;XML: XmlItemExporter&lt;/li&gt;
+  &lt;li&gt;Pickle: PickleItemExporter&lt;/li&gt;
+  &lt;li&gt;Marshal: MarshaItemExporter
+    &lt;h4 id=&quot;存储storages&quot;&gt;存储storages&lt;/h4&gt;
+    &lt;p&gt;使用feed存储时通过使用URI(通过FEED_URI设置)来定义存储端。feed支持URI支持方式支持的多种存储后端类型。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;本地文件系统
+将feed存储在本地系统，URI scheme: file，URI样例: file:///tmp/export.csv；注意: (只有)存储在本地文件系统时，您可以指定一个绝对路径 /tmp/export.csv 并忽略协议(scheme)。不过这仅仅只能在Unix系统中工作。&lt;/li&gt;
+  &lt;li&gt;FTP
+将feed存储在FTP服务器。URI scheme: ftp
+URI样例: ftp://user:pass@ftp.example.com/path/to/export.csv&lt;/li&gt;
+  &lt;li&gt;S3(需要boto)
+URI scheme: s3
+URI样例:
+s3://mybucket/path/to/export.csv
+s3://aws_key:aws_secret@mybucket/path/to/export.csv
+需要的外部依赖库: boto
+将feed存储在 Amazon S3 。&lt;/li&gt;
+  &lt;li&gt;标准输出
+eed输出到Scrapy进程的标准输出。
+URI scheme: stdout;
+URI样例: stdout:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;设定settings&quot;&gt;设定settings&lt;/h4&gt;
+&lt;p&gt;这些是配置feed输出的设定&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;FEED_URI (必须)&lt;/li&gt;
+  &lt;li&gt;FEED_FORMAT:输出feed的序列化格式&lt;/li&gt;
+  &lt;li&gt;FEED_STORAGES&lt;/li&gt;
+  &lt;li&gt;FEED_EXPORTERS&lt;/li&gt;
+  &lt;li&gt;FEED_STORE_EMPTY&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;link-extractors&quot;&gt;Link Extractors&lt;/h3&gt;
+&lt;p&gt;Link Extractors 是那些目的仅仅是从网页(scrapy.http.Response 对象)中抽取最终将会被follow链接的对象｡&lt;/p&gt;
+
+&lt;p&gt;Scrapy默认提供2种可用的 Link Extractor, 但你通过实现一个简单的接口创建自己定制的Link Extractor来满足需求｡&lt;/p&gt;
+
+&lt;p&gt;每个LinkExtractor有唯一的公共方法是 extract_links ,它接收一个 Response 对象,并返回一个 scrapy.link.Link 对象｡Link Extractors,要实例化一次并且 extract_links 方法会根据不同的response调用多次提取链接｡&lt;/p&gt;
+
+&lt;p&gt;Link Extractors在 CrawlSpider 类(在Scrapy可用)中使用, 通过一套规则,但你也可以用它在你的Spider中,即使你不是从 CrawlSpider 继承的子类, 因为它的目的很简单: 提取链接｡&lt;/p&gt;
+
+&lt;h3 id=&quot;logging&quot;&gt;logging&lt;/h3&gt;
+&lt;p&gt;Scrapy提供了log功能。您可以通过 scrapy.log 模块使用。当前底层实现使用了 Twisted logging ，不过可能在之后会有所变化。&lt;/p&gt;
+
+&lt;p&gt;log服务必须通过显示调用 scrapy.log.start() 来开启。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CRITICAL - 严重错误(critical)&lt;/li&gt;
+  &lt;li&gt;ERROR - 一般错误(regular errors)&lt;/li&gt;
+  &lt;li&gt;WARNING - 警告信息(warning messages)&lt;/li&gt;
+  &lt;li&gt;INFO - 一般信息(informational messages)&lt;/li&gt;
+  &lt;li&gt;DEBUG - 调试信息(debugging messages)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;您可以通过终端选项(command line option) –loglevel/-L 或 LOG_LEVEL 来设置log级别。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from scrapy import log
+log.msg(&quot;This is a warning&quot;, level=log.WARNING)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;scrapylog模块&quot;&gt;scrapy.log模块&lt;/h4&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;logfile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loglevel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logstdout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 启动log功能。该方法必须在记录(log)任何信息前被调用。否则调用前的信息将会丢失&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INFO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spider&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 记录信息(Log a message)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CRITICAL&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;数据收集stats-collection&quot;&gt;数据收集(Stats Collection)&lt;/h3&gt;
+&lt;h3 id=&quot;发送email&quot;&gt;发送email&lt;/h3&gt;
+&lt;p&gt;虽然Python通过 smtplib 库使得发送email变得很简单，Scrapy仍然提供了自己的实现。 该功能十分易用，同时由于采用了 Twisted非阻塞式(non-blocking)IO ，其避免了对爬虫的非阻塞式IO的影响。 另外，其也提供了简单的API来发送附件。 通过一些 settings 设置，您可以很简单的进行配置。有两种方法可以创建邮件发送器(mail sender)&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过标准构造器(constructor)创建:
+    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy.mail&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MailSender&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;mailer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MailSender&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;您可以传递一个Scrapy设置对象，其会参考 settings:
+    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;mailer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MailSender&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这是如何来发送邮件了(不包括附件):&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;mailer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;someone@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Some subject&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Some body&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;another@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;telnet终端telnet-console&quot;&gt;Telnet终端(Telnet Console)&lt;/h3&gt;
+&lt;p&gt;Scrapy提供了内置的telnet终端，以供检查，控制Scrapy运行的进程。 telnet仅仅是一个运行在Scrapy进程中的普通python终端。因此您可以在其中做任何事。&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet localhost 6023
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;telnet为了方便提供了一些默认定义的变量:&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;快捷名称	 描述
+crawler	Scrapy Crawler &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;scrapy.crawler.Crawler 对象&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+engine	Crawler.engine属性
+spider	当前激活的爬虫&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;spider&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+slot	the engine slot
+extensions	扩展管理器&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;manager&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Crawler.extensions属性&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+stats	状态收集器 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Crawler.stats属性&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+settings	Scrapy设置&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;setting&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;对象 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Crawler.settings属性&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+est	打印引擎状态的报告
+prefs	针对内存调试 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;参考 调试内存溢出&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+p	pprint.pprint 函数的简写
+hpy	针对内存调试 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;参考 调试内存溢出&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;web-service&quot;&gt;Web Service&lt;/h3&gt;
+&lt;p&gt;Scrapy提供用于监控及控制运行中的爬虫的web服务(service)。 服务通过 JSON-RPC 2.0 协议提供大部分的资源，不过也有些(只读)资源仅仅输出JSON数据。&lt;/p&gt;
+
+&lt;h3 id=&quot;常见问题faq&quot;&gt;常见问题(FAQ)&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Q:Scrapy相BeautifulSoup或lxml比较,如何呢？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;BeautifulSoup 及 lxml 是HTML和XML的分析库。Scrapy则是 编写爬虫，爬取网页并获取数据的应用框架(application framework)。&lt;/p&gt;
+
+&lt;p&gt;Scrapy提供了内置的机制来提取数据(叫做 选择器(selectors))。 但如果您觉得使用更为方便，也可以使用 BeautifulSoup (或 lxml)。 总之，它们仅仅是分析库，可以在任何Python代码中被导入及使用。&lt;/p&gt;
+
+&lt;p&gt;拿Scrapy与 BeautifulSoup (或 lxml) 比较就好像是拿 jinja2 与 Django 相比。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Q: Scrapy支持那些Python版本？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Scrapy仅仅支持Python 2.7。 Python2.6的支持从Scrapy 0.20开始被废弃了。Scrapy不支持Python 3但已经在计划中&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Q: 我要如何在spider里模拟用户登录呢?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;参考 使用FormRequest.from_response()方法模拟用户登录.
+http://scrapy-chs.readthedocs.io/zh_CN/0.24/topics/request-response.html#topics-request-response-ref-request-userlogin&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Q: Scrapy是以广度优先还是深度优先进行爬取的呢？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;默认情况下，Scrapy使用 LIFO 队列来存储等待的请求。简单的说，就是 深度优先顺序 。深度优先对大多数情况下是更方便的。如果您想以 广度优先顺序 进行爬取，你可以设置以下的设定:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-BASH&quot;&gt;DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = 'scrapy.squeue.PickleFifoDiskQueue'
+SCHEDULER_MEMORY_QUEUE = 'scrapy.squeue.FifoMemoryQueue'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Q: 为什么Scrapy下载了英文的页面，而不是我的本国语言？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;尝试通过覆盖 DEFAULT_REQUEST_HEADERS 设置来修改默认的 Accept-Language 请求头。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Q:将所有爬取到的item转存(dump)到JSON/CSV/XML文件的最简单的方法?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-BASH&quot;&gt;scrapy crawl myspider -o items.json
+scrapy crawl myspider -o items.json
+scrapy crawl myspider -o items.xml
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Q:分析大XML/CSV数据源的最好方法是?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;使用XPath选择器来分析大数据源可能会有问题。选择器需要在内存中对数据建立完整的 DOM树，这过程速度很慢且消耗大量内存。&lt;/p&gt;
+
+&lt;p&gt;为了避免一次性读取整个数据源，您可以使用 scrapy.utils.iterators 中的 xmliter 及 csviter 方法。 实际上，这也是feed spider(参考 Spiders)中的处理方法。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Scrapy自动管理cookies么？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;是的，Scrapy接收并保持服务器返回来的cookies，在之后的请求会发送回去，就像正常的网页浏览器做的那样。&lt;/p&gt;
+
+&lt;h3 id=&quot;避免被禁止ban&quot;&gt;避免被禁止(ban)&lt;/h3&gt;
+&lt;p&gt;下面是些处理这些站点的建议(tips):&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用user agent池，轮流选择之一来作为user agent。池中包含常见的浏览器的user agent(google一下一大堆)&lt;/li&gt;
+  &lt;li&gt;禁止cookies(参考 COOKIES_ENABLED)，有些站点会使用cookies来发现爬虫的轨迹。&lt;/li&gt;
+  &lt;li&gt;设置下载延迟(2或更高)。参考 DOWNLOAD_DELAY 设置。&lt;/li&gt;
+  &lt;li&gt;如果可行，使用 Google cache 来爬取数据，而不是直接访问站点。&lt;/li&gt;
+  &lt;li&gt;使用IP池。例如免费的 Tor项目 或付费服务(ProxyMesh)。&lt;/li&gt;
+  &lt;li&gt;使用高度分布式的下载器(downloader)来绕过禁止(ban)，您就只需要专注分析处理页面。这样的例子有: Crawlera
+http://crawlera.com/&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;性能测试&quot;&gt;性能测试&lt;/h3&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;scrapy bench
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Fri, 02 Feb 2018 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2018/02/02/scrapy%E8%BF%9B%E9%98%B6/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2018/02/02/scrapy%E8%BF%9B%E9%98%B6/</guid>
+        
+        <category>python</category>
+        
+        <category>scrapy</category>
+        
+        
+        <category>document</category>
+        
+      </item>
+    
+      <item>
+        <title>python爬虫之scrapy基础</title>
+        <description>&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
+&lt;p&gt;爬虫实现方式有很多，可选择的语言也很多，如node.js、java、python；对于python，实现的方式也有很多；可以直接用requests模块请求到网页数据后，用正则/xpath/css去匹配，涉及到的模块有bs4/urllib/urlencode/etree等；现在用scrapy模块，帮我们省去了数据获取的工作，我们只需要对数据进行清洗过滤即可，“伟人是站在巨人肩头的侏儒”，正所谓“工欲善其事，必先得其器”。Scrapy是一个为了爬取网站数据，提取结构性数据而编写的应用框架。 可以应用在包括数据挖掘，信息处理或存储历史数据等一系列的程序中。&lt;/p&gt;
+&lt;h3 id=&quot;工程搭建&quot;&gt;工程搭建&lt;/h3&gt;
+&lt;p&gt;直接上官网 https://scrapy.org/ 和
+http://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/overview.html&lt;/p&gt;
+&lt;h4 id=&quot;环境&quot;&gt;环境&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Python 2.7 or Python 3.4+&lt;/li&gt;
+  &lt;li&gt;install
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;scrapy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;另外插一句，pip和conda的区别，自行百度吧; 关于scrapy有两种部署模式，部署到本地和部署到cloud；本次只记录本地&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;编写spider&quot;&gt;编写spider&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于response数据过滤两种方式:xpath/css&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;用css表达式:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# myspider.py&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlogSpider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'blogspider'&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;start_urls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'https://blog.scrapinghub.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'h2.entry-title'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'title'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a ::text'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract_first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;next_page&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'div.prev-post &amp;gt; a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;follow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;next_page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;运行&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kaiz-virtual-machine:/opt# scrapy runspider myspider.py
+2018-01-31 15:17:42 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;scrapy.utils.log] INFO: Scrapy 1.5.0 started &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;bot: scrapybot&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2018-01-31 15:17:42 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;scrapy.utils.log] INFO: Versions: lxml 4.1.1.0, libxml2 2.9.7, cssselect 1.0.3, parsel 1.3.1, w3lib 1.18.0, Twisted 17.9.0, Python 2.7.12 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;default, Nov 20 2017, 18:23:56&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;GCC 5.4.0 20160609],
+...
+2018-01-31 17:24:17 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;scrapy.core.scraper] DEBUG: Scraped from &amp;lt;200 https://blog.scrapinghub.com/page/11/&amp;gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'title'&lt;/span&gt;: u&lt;span class=&quot;s1&quot;&gt;'Scrapy 0.12 released'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+2018-01-31 17:24:17 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;scrapy.core.scraper] DEBUG: Scraped from &amp;lt;200 https://blog.scrapinghub.com/page/11/&amp;gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'title'&lt;/span&gt;: u&lt;span class=&quot;s1&quot;&gt;'Spoofing your Scrapy bot IP using tsocks'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;xpath语法详见http://www.runoob.com/xpath/xpath-syntax.html ;对于以上spider用xpath写为:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlogSpider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'blogspider'&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;start_urls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'https://blog.scrapinghub.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;//h2[@class='entry-title']/a/text()&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'title'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;next_page&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'div.prev-post &amp;gt; a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;follow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;next_page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;编写第一个爬虫spider&quot;&gt;编写第一个爬虫(Spider)&lt;/h3&gt;
+&lt;p&gt;现在开始用创建项目方式来爬虫，一般分为以下几个步骤：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;创建一个scrapy项目&lt;/li&gt;
+  &lt;li&gt;定义提取的Item&lt;/li&gt;
+  &lt;li&gt;编写爬取网站的spider并提取Item&lt;/li&gt;
+  &lt;li&gt;编写Item Pipeline来存储提取到的Item(即数据)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;创建项目&quot;&gt;创建项目&lt;/h4&gt;
+&lt;p&gt;在开始爬取之前，需创建一个项目：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;scrapy startproject tutorial
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;scrapy.cfg: 项目的配置文件&lt;/li&gt;
+  &lt;li&gt;tutorial/: 该项目的python模块。之后您将在此加入代码。&lt;/li&gt;
+  &lt;li&gt;tutorial/items.py: 项目中的item文件.&lt;/li&gt;
+  &lt;li&gt;tutorial/pipelines.py: 项目中的pipelines文件.&lt;/li&gt;
+  &lt;li&gt;tutorial/settings.py: 项目的设置文件.&lt;/li&gt;
+  &lt;li&gt;tutorial/spiders/: 放置spider代码的目录.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;item&quot;&gt;Item&lt;/h4&gt;
+&lt;p&gt;爬取的主要目的就是从非结构性的数据源提取结构性数据；类似orm，或是java的实体类一样&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DmozItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Field&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Field&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Field&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;spider&quot;&gt;spider&lt;/h4&gt;
+&lt;p&gt;Spider类定义了如何爬取某个(或某些)网站。包括了爬取的动作(例如:是否跟进链接)以及如何从网页的内容中提取结构化数据(爬取item)。最后，由spider返回的item将被存到数据库(由某些 Item Pipeline 处理)或使用 Feed exports 存入到文件中。 换句话说，Spider就是您定义爬取的动作及分析某个网页(或者是有些网页)的地方。是用户编写用于从一个单一的网站或是一类网站爬取到的数据的类，需继承scrapy.Spider类，有以下三个属性&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;name:用于区别Spider,惟一&lt;/li&gt;
+  &lt;li&gt;allowed_domains： 可选。包含了spider允许爬取的域名(domain)列表(list)。 当 OffsiteMiddleware 启用时， 域名不在列表中的URL不会被跟进。&lt;/li&gt;
+  &lt;li&gt;start_urls： 目标url列表&lt;/li&gt;
+  &lt;li&gt;start_requests()： 该方法的默认实现是使用 start_urls 的url生成Request。当spider启动爬取并且未制定URL时，该方法被调用。 当指定了URL时，make_requests_from_url() 将被调用来创建Request对象。 该方法仅仅会被Scrapy调用一次，因此您可以将其实现为生成器。该方法必须返回一个可迭代对象(iterable)。该对象包含了spider用于爬取的第一个Request。
+如果您想要修改最初爬取某个网站的Request对象，您可以重写(override)该方法。 例如，如果您需要在启动时以POST登录某个网站，你可以这么写:
+    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start_requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FormRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.example.com/login&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                             &lt;span class=&quot;n&quot;&gt;formdata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'john'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'pass'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+                             &lt;span class=&quot;n&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;logged_in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;logged_in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# here you would extract links to follow and return Requests for&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# each of them, with another callback&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;make_requests_from_url(url):该方法接受一个URL并返回用于爬取的 Request 对象。 该方法在初始化request时被 start_requests() 调用，也被用于转化url为request。默认未被复写(overridden)的情况下，该方法返回的Request对象中， parse() 作为回调函数，dont_filter参数也被设置为开启。 (详情参见 Request).&lt;/li&gt;
+  &lt;li&gt;parse()： 是Spider的一个方法。被调用时，每个初始URL完成下载后生成的response对象会作为唯一参数传递给该函数。该方法负责解析返回的数据(response data),提取数据生成item及生成需进一步处理的URL的requset对象。以下dmoz_spider.py:&lt;/li&gt;
+  &lt;li&gt;log(message[, level, component])
+使用 scrapy.log.msg() 方法记录(log)message。 log中自动带上该spider的 name 属性。 更多数据请参见 Logging 。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;样例一：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DmozSpider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;dmoz&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;allowed_domains&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'dmoz.org'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;start_urls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;http://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/tutorial.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+         &lt;span class=&quot;s&quot;&gt;&quot;http://scrapy-chs.readthedocs.io/zh_CN/0.24/topics/feed-exports.html&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'wb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;样例二：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MySpider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'example.com'&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;allowed_domains&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'example.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;start_urls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'http://www.example.com/1.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'http://www.example.com/2.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'http://www.example.com/3.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A response from &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s just arrived!'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;样例三：另一个在单个回调函数中返回多个Request以及Item的例子:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;myproject.items&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MyItem&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MySpider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Spider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'example.com'&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;allowed_domains&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'example.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;start_urls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'http://www.example.com/1.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'http://www.example.com/2.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'http://www.example.com/3.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;sel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h3&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//h3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MyItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//a/@href'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scrapy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;爬取规则crawling-rules&quot;&gt;爬取规则(Crawling rules)&lt;/h4&gt;
+&lt;p&gt;当编写爬虫规则时，请避免使用 parse 作为回调函数。 由于 CrawlSpider 使用 parse 方法来实现其逻辑，如果 您覆盖了 parse 方法，crawl spider 将会运行失败。link_extractor 是一个 Link Extractor 对象。 其定义了如何从爬取到的页面提取链接。callback 是一个callable或string(该spider中同名的函数将会被调用)。 从link_extractor中每获取到链接时将会调用该函数。该回调函数接受一个response作为其第一个参数， 并返回一个包含 Item 以及(或) Request 对象(或者这两者的子类)的列表(list)。
+http://scrapy-chs.readthedocs.io/zh_CN/0.24/topics/spiders.html&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;scrapy crawl dmoz
+'''
+2018-01-31 19:34:39 [scrapy.extensions.telnet] DEBUG: Telnet console listening on 127.0.0.1:6023
+2018-01-31 19:34:40 [scrapy.core.engine] DEBUG: Crawled (200) &amp;lt;GET http://scrapy-chs.readthedocs.io/robots.txt&amp;gt; (referer: None)
+2018-01-31 19:34:40 [scrapy.core.engine] DEBUG: Crawled (200) &amp;lt;GET http://scrapy-chs.readthedocs.io/zh_CN/0.24/topics/feed-exports.html&amp;gt; (referer: None)
+2018-01-31 19:34:44 [scrapy.core.engine] DEBUG: Crawled (200) &amp;lt;GET http://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/tutorial.html&amp;gt; (referer: None)
+'''
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;selectors选择器&quot;&gt;Selectors选择器&lt;/h3&gt;
+&lt;p&gt;当抓取网页时，你做的最常见的任务是从HTML源码中提取数据。现有的一些库可以达到这个目的：&lt;/p&gt;
+
+&lt;p&gt;这里给出XPath表达式的例子及对应的含义:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;BeautifulSoup
+是在程序员间非常流行的网页分析库，它基于HTML代码的结构来构造一个Python对象， 对不良标记的处理也非常合理，但它有一个缺点：慢&lt;/li&gt;
+  &lt;li&gt;lxml 是一个基于 ElementTree (不是Python标准库的一部分)的python化的XML解析库(也可以解析HTML)。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Scrapy提取数据有自己的一套机制。它们被称作选择器(seletors)，因为他们通过特定的 XPath 或者 CSS 表达式来“选择” HTML文件中的某个部分。&lt;/p&gt;
+
+&lt;p&gt;XPath 是一门用来在XML文件中选择节点的语言，也可以用在HTML上。 CSS 是一门将HTML文档样式化的语言。选择器由它定义，并与特定的HTML元素的样式相关连。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;/html/head/title: 选择HTML文档中 &amp;lt;head&amp;gt; 标签内的 &lt;title&gt; 元素&lt;/title&gt;&lt;/li&gt;
+  &lt;li&gt;/html/head/title/text(): 选择上面提到的 &lt;title&gt; 元素的文字&lt;/title&gt;&lt;/li&gt;
+  &lt;li&gt;//td: 选择所有的 &amp;lt;td&amp;gt; 元素&lt;/li&gt;
+  &lt;li&gt;//div[@class=”mine”]: 选择所有具有 class=”mine” 属性的 div 元素&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Scrapy选择器构建于 lxml 库之上，这意味着它们在速度和解析准确性上非常相似。&lt;/p&gt;
+
+&lt;h5 id=&quot;构造选择器selectors&quot;&gt;构造选择器(selectors)&lt;/h5&gt;
+&lt;p&gt;Scrapy selector是以 文字(text) 或 TextResponse 构造的 Selector 实例。 其根据输入的类型自动选择最优的分析方法(XML vs HTML):&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy.selector&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scrapy.http&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HtmlResponse&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#以文字构造:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'&amp;lt;html&amp;gt;&amp;lt;body&amp;gt;&amp;lt;span&amp;gt;good&amp;lt;/span&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//span/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'good'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 以response构造:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HtmlResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'http://example.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//span/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'good'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#为了方便起见，response对象以 .selector 属性提供了一个selector， 您可以随时使用该快捷方法:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//span/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'good'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;在shell中尝试selector选择器&quot;&gt;在shell中尝试selector选择器&lt;/h4&gt;
+&lt;p&gt;HTML源码:&lt;/p&gt;
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;base&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'http://example.com/'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Example website&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'images'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image1.html'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Name: My image 1 &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image1_thumb.jpg'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image2.html'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Name: My image 2 &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image2_thumb.jpg'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image3.html'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Name: My image 3 &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image3_thumb.jpg'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image4.html'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Name: My image 4 &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image4_thumb.jpg'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image5.html'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Name: My image 5 &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'image5_thumb.jpg'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;首先, 我们打开shell:&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;scrapy shell &lt;span class=&quot;s1&quot;&gt;'http://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/tutorial.html'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;接着，当shell载入后，您将获得名为 response 的shell变量，其为响应的response， 并且在其 response.selector 属性上绑定了一个selector。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;response.body&lt;/li&gt;
+  &lt;li&gt;response.headers&lt;/li&gt;
+  &lt;li&gt;response.selector:当输入response.selector时，将获取到一个可以用于查询数据的selector选择器，以及映射到response.selector.xpath()、response.selector.css()的快捷方法shortcut:response.xpath()和response.css()&lt;/li&gt;
+  &lt;li&gt;response.url&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可用的Scrapy对象&lt;/p&gt;
+
+&lt;p&gt;Scrapy终端根据下载的页面会自动创建一些方便使用的对象，例如 Response 对象及 Selector 对象(对HTML及XML内容)。&lt;/p&gt;
+
+&lt;p&gt;这些对象有:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;crawler - 当前 Crawler 对象.&lt;/li&gt;
+  &lt;li&gt;spider - 处理URL的spider。 对当前URL没有处理的Spider时则为一个 + Spider 对象。&lt;/li&gt;
+  &lt;li&gt;request - 最近获取到的页面的 Request 对象。 您可以使用 replace() 修+ 改该request。或者 使用 fetch 快捷方式来获取新的request。&lt;/li&gt;
+  &lt;li&gt;response - 包含最近获取到的页面的 Response 对象。&lt;/li&gt;
+  &lt;li&gt;sel - 根据最近获取到的response构建的 Selector 对象。&lt;/li&gt;
+  &lt;li&gt;settings - 当前的 Scrapy settings&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们构建一个XPath来选择title标签内的文字:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//title/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;由于在response中使用XPath、CSS查询十分普遍，因此，Scrapy提供了两个实用的快捷方式: response.xpath() 及 response.css():&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//title/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'title::text'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如你所见， .xpath() 及 .css() 方法返回一个类 SelectorList 的实例, 它是一个新选择器的列表。这个API可以用来快速的提取嵌套数据。&lt;/p&gt;
+
+&lt;p&gt;为了提取真实的原文数据，你需要调用 .extract() 方法如下&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//title/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'Example website'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;现在我们将得到根URL(base URL)和一些图片链接:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//base/@href'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'http://example.com/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'base::attr(href)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'http://example.com/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//a[contains(@href, &quot;image&quot;)]/@href'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'image1.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image2.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image3.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image4.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image5.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a[href*=image]::attr(href)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'image1.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image2.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image3.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image4.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image5.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//a[contains(@href, &quot;image&quot;)]/img/@src'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'image1_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image2_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image3_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image4_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image5_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;css&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a[href*=image] img::attr(src)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'image1_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image2_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image3_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image4_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'image5_thumb.jpg'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;结合正则表达式使用选择器selectors&quot;&gt;结合正则表达式使用选择器(selectors)&lt;/h4&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//a[contains(@href, &quot;image&quot;)]/text()'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;r'Name:\s*(.*)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;u'My image 1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'My image 2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'My image 3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'My image 4'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;s&quot;&gt;u'My image 5'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;使用相对xpaths&quot;&gt;使用相对XPaths&lt;/h4&gt;
+&lt;p&gt;记住如果你使用嵌套的选择器，并使用起始为 / 的XPath，那么该XPath将对文档使用绝对路径，而且对于你调用的 Selector 不是相对路径。&lt;/p&gt;
+
+&lt;p&gt;比如，假设你想提取在 &amp;lt;div&amp;gt; 元素中的所有 &amp;lt;p&amp;gt; 元素。首先，你将先得到所有的 &amp;lt;div&amp;gt; 元素:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;divs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//div'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;开始时，你可能会尝试使用下面的错误的方法，因为它其实是从整篇文档中，而不仅仅是从那些 &amp;lt;div&amp;gt; 元素内部提取所有的 &amp;lt;p&amp;gt; 元素:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;divs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//p'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# this is wrong - gets all &amp;lt;p&amp;gt; from the whole document&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;下面是比较合适的处理方法(注意 .//p XPath的点前缀):&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;divs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'.//p'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# extracts all &amp;lt;p&amp;gt; inside&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;另一种常见的情况将是提取所有直系 &amp;lt;p&amp;gt; 的结果:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;divs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extract&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;可用的工具命令&quot;&gt;可用的工具命令&lt;/h3&gt;
+&lt;p&gt;scrapy提供了两种类型的命令。一种必须在scrapy项目中运行，别外一种是全局的&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;全局命令
+    &lt;ul&gt;
+      &lt;li&gt;startproject&lt;/li&gt;
+      &lt;li&gt;settings 例如获取项目名称：scrapy settings –get BOT_NAME&lt;/li&gt;
+      &lt;li&gt;runspider:这个命令和crawl命令的区别在于crawl命令后是spider的name，而runspider命令后加的是爬虫的文件名，在本文的项目中，使用crawl命令：scrapy crawl baidu; 使用runspider就是：scrapy runspider baidu.py&lt;/li&gt;
+      &lt;li&gt;shell&lt;/li&gt;
+      &lt;li&gt;fetch: –nolog/–headers/–no-redirect 分别是不输出日志信息，返回网页的请求头和禁止重定向。如果网页没有重定向的话返回的还是原网页。
+使用Scrapy下载器(downloader)下载给定的URL，并将获取到的内容送到标准输出。 scrapy fetch –nolog http://www.example.com/some/page.htm&lt;/li&gt;
+      &lt;li&gt;view: 这个命令比较有用，它的作用是请求网址，输出网址的源码，并将该网页保存成一个文件，使用浏览器打开。如果打开的网址和你正常加载的网页有所不同，一般情况下没显示的部分使用了异步加载。因此该命令可以用来检查 spider 所获取到的页面,并确认这是您所期望的。&lt;/li&gt;
+      &lt;li&gt;version: 这个命令可以查询当前scrapy的版本，和一些依赖库版本信息。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;项目命令
+    &lt;ul&gt;
+      &lt;li&gt;crawl: 使用spider进行爬取 scrapy crawl myspider&lt;/li&gt;
+      &lt;li&gt;check: 运行contract检查 scrapy check [-l] &lt;spider&gt;&lt;/spider&gt;&lt;/li&gt;
+      &lt;li&gt;list: 列出当前项目中所有可用的spider。每行输出一个spider。scrapy list&lt;/li&gt;
+      &lt;li&gt;edit: 使用 EDITOR 中设定的编辑器编辑给定的spider语法: scrapy edit &lt;spider&gt;; 如果你不使用vim作为编辑器的话，这个命令不常用，因为这个命令会调用vim来编辑文件。&lt;/spider&gt;&lt;/li&gt;
+      &lt;li&gt;parse: 获取给定的 URL 并使用相应的 spider 分析处理。如果您提供 –callback 选项,则使用 spider 的该方法处理,否则使用 parse&lt;/li&gt;
+      &lt;li&gt;genspider:在spiders目录下创建最基本的模版，scrapy genspider baidu www.baidu.com
+        &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;scrapy genspider &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;'''
+Available templates:
+basic
+crawl
+csvfeed
+xmlfeed
+'''&lt;/span&gt;
+ scrapy genspider &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; basic
+ scrapy genspider &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; basic example example.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;        &lt;/div&gt;
+      &lt;/li&gt;
+      &lt;li&gt;deploy&lt;/li&gt;
+      &lt;li&gt;bench&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;还有什么&quot;&gt;还有什么?&lt;/h3&gt;
+&lt;p&gt;到此你已经从网页上抓到了你想要的一些数据,但这仅仅冰山一角.scrapy还提供了更为强大的特性使得爬虫更为简单,如:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;html,xml源数据选择及提取内置支持&lt;/li&gt;
+  &lt;li&gt;提供了一系列在spider之间共享的可复用的过滤器,即Item Loaders. 对智能处理爬取数据提供了内置支持&lt;/li&gt;
+  &lt;li&gt;通过feed导出提供了多种格式JSON,CSV,XML. 多存储后端FTP,S3,本地文件系统的支持&lt;/li&gt;
+  &lt;li&gt;提供了media pipeline,可以自动爬取到的数据中的图片或其他资源&lt;/li&gt;
+  &lt;li&gt;高可扩展性,你可以通过使用signals,设计好的API(中间件,extensions,pipelines)来定制你的功能.&lt;/li&gt;
+  &lt;li&gt;内置中间件及扩展为下列功能提供了支持
+    &lt;ul&gt;
+      &lt;li&gt;cookies and session处理&lt;/li&gt;
+      &lt;li&gt;HTTP压缩&lt;/li&gt;
+      &lt;li&gt;HTTP认证&lt;/li&gt;
+      &lt;li&gt;user-agent模拟&lt;/li&gt;
+      &lt;li&gt;robots.txt&lt;/li&gt;
+      &lt;li&gt;爬取深度限制&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;针对非英语系中不标准或者错误的编码声明，提供了自动检测以健壮的编码支持&lt;/li&gt;
+  &lt;li&gt;支持根据模板生成爬虫。在加速爬虫创建同时，保持在大型项目中的代码更为一致。详细内容见genspider命令 http://scrapy-chs.readthedocs.io/zh_CN/0.24/topics/commands.html#std:command-genspider&lt;/li&gt;
+  &lt;li&gt;针对多爬虫下性能评估、失败检测，提供了可扩展的状态收集工具&lt;/li&gt;
+  &lt;li&gt;提供交互式shell终端，为您测试xpath表达式、编写和调试爬虫提供了极大的方便&lt;/li&gt;
+  &lt;li&gt;提供system service，简化在生产环境的部署及运行&lt;/li&gt;
+  &lt;li&gt;内置web service使您可以监视及控制您的机器&lt;/li&gt;
+  &lt;li&gt;内置telnet终端，通过在scrapy进程中钩入python终端，例您可以查看并且调试爬虫&lt;/li&gt;
+  &lt;li&gt;Logging为您在爬取过程中捕捉错误提供了方便&lt;/li&gt;
+  &lt;li&gt;支持sitemaps爬取&lt;/li&gt;
+  &lt;li&gt;具有缓存的DNS解析器&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 31 Jan 2018 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2018/01/31/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E5%9F%BA%E7%A1%80/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2018/01/31/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E5%9F%BA%E7%A1%80/</guid>
+        
+        <category>python</category>
+        
+        
+        <category>document</category>
+        
+      </item>
+    
+      <item>
+        <title>python时间日期处理</title>
+        <description>&lt;h3 id=&quot;datetime模块&quot;&gt;datetime模块&lt;/h3&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;datetime&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前的日期和时间是 &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ISO格式的日期和时间是 &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isoformat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前的年份是 &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前的月份是 &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;month&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前的日期是  &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;day&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dd/mm/yyyy 格式是  &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;day&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;month&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前小时是 &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hour&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前分钟是 &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;minute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;当前秒是  &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;time模块&quot;&gt;time模块&lt;/h3&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 格式化成2016-03-20 11:45:39形式&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;m-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 格式化成Sat Mar 28 22:24:24 2016形式&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;a &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;b &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 将格式字符串转换为时间戳&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Sat Mar 28 22:24:24 2016&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mktime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strptime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;a &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;b &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''
+2016-04-07 10:25:09
+Thu Apr 07 10:25:09 2016
+1459175064.0
+'''&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;calendar日历模块&quot;&gt;calendar日历模块&lt;/h3&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;calendar&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calendar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;month&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2016&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''
+January 2016
+Mo Tu We Th Fr Sa Su
+         1  2  3
+4  5  6  7  8  9 10
+11 12 13 14 15 16 17
+18 19 20 21 22 23 24
+25 26 27 28 29 30 31
+'''&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Wed, 31 Jan 2018 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2018/01/31/python%E6%97%B6%E9%97%B4%E6%97%A5%E6%9C%9F%E5%A4%84%E7%90%86/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2018/01/31/python%E6%97%B6%E9%97%B4%E6%97%A5%E6%9C%9F%E5%A4%84%E7%90%86/</guid>
+        
+        <category>python</category>
+        
+        
+        <category>document</category>
+        
+      </item>
+    
+      <item>
+        <title>chapter4-python-多线程编程</title>
+        <description>&lt;h3 id=&quot;threading模块&quot;&gt;threading模块&lt;/h3&gt;
+&lt;p&gt;thrading模块支持守护线程：守护线程一般是一个等待客户端请求的服务器。如果没有客户端的请求，守护线程就是空闲的。如果把一个线程设置成一个守护线程，就表示这个线程是不重要的，进程退出时不需要等待这个线程执行完成。要将一个线程设置为守护线程，需要在启动之前执行如下赋值语句 thread.daemon=True整个Python程序(可以解读为主线程)将在所有的非守护线程退出后才会退出，换句话说，就是没有剩下存活的非守护线程时。&lt;/p&gt;
+&lt;h4 id=&quot;thread类对象&quot;&gt;Thread类对象&lt;/h4&gt;
+&lt;p&gt;threading的Thread类是主要执行对象&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;属性&lt;/th&gt;
+      &lt;th&gt;描述&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;thread对象数据属性&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;name&lt;/td&gt;
+      &lt;td&gt;线程名&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ident&lt;/td&gt;
+      &lt;td&gt;线程的描述符&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;daemon&lt;/td&gt;
+      &lt;td&gt;布尔标志，表示这个线程是否是守护线程&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Thread对象方法&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;em&gt;init&lt;/em&gt;(group=None,target=None,name=None,args=(),kwargs={},verbose=None,daemon=None)&lt;/td&gt;
+      &lt;td&gt;实例化一个线程对象，需要有一个可调用 的target，以及其参数args或kwargs。daemon的值将会设定thread.daemon属性/标志。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;使用Thread类，可以有很多方法来创建线程。常规三种：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;创建Thread的实例，传给他一个函数&lt;/li&gt;
+  &lt;li&gt;创建Thread的实例，传给它一个可调用的类实例&lt;/li&gt;
+  &lt;li&gt;派生Thread的子类，并创建子类的实例&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;倾向使用最后一种&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nloop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nsec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;start loop&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nloop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;at:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nsec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;loop&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nloop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;done at:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;starting at:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;nloops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nloops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nloops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;#调用start()函数时，线程开始执行&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nloops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;#调用join()等待线程执行完成后退出&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;all DONE at:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@i612-devopsyw-1 tmp]# python mtsleepC.py
+starting at: Thu Nov 30 15:43:36 2017
+start loop 0 at: Thu Nov 30 15:43:36 2017
+start loop 1 at: Thu Nov 30 15:43:36 2017
+loop 1 done at: Thu Nov 30 15:43:38 2017
+loop 0 done at: Thu Nov 30 15:43:40 2017
+all DONE at: Thu Nov 30 15:43:40 2017
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Thu, 30 Nov 2017 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2017/11/30/chapter4-python-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2017/11/30/chapter4-python-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/</guid>
+        
+        <category>python</category>
+        
+        
+        <category>document</category>
+        
+      </item>
+    
+      <item>
+        <title>consul+docker+register+ocnsul-template实现服务自动发现+主动注册+auto_scale</title>
+        <description>&lt;h3 id=&quot;环境准备&quot;&gt;环境准备&lt;/h3&gt;
+&lt;p&gt;client agent:node1 192.168.0.11
+server agent:node2 192.168.0.12&lt;/p&gt;
+&lt;h4 id=&quot;consul-client&quot;&gt;consul client&lt;/h4&gt;
+&lt;p&gt;node1 192.168.0.11&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;/etc/default/consul :
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; CONSUL_FLAGS=&quot;-data-dir=/opt/consul/data -config-dir=/opt/consul/conf -pid-file=/opt/consul/run/consul.pid -client=0.0.0.0 -bind=192.168.0.11 -node=consul-node-1 -retry-join '192.168.0.12'&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;/usr/lib/systemd/system/consul.service
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[Unit]
+Description=Consul service discovery agent
+Requires=network-online.target
+After=network-online.target
+[Service]
+User=consul
+Group=consul
+EnvironmentFile=-/etc/default/consul
+Environment=GOMAXPROCS=2
+Restart=on-failure
+ExecStartPre=[ -f &quot;/opt/consul/run/consul.pid&quot; ] &amp;amp;&amp;amp; /usr/bin/rm -f /opt/consul/run/consul.pid
+ExecStart=/usr/bin/consul agent $CONSUL_FLAGS
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+TimeoutStopSec=5
+[Install]
+WantedBy=multi-user.target
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;/usr/bin/consul&lt;/li&gt;
+  &lt;li&gt;/opt/consul/{data,run,conf}&lt;/li&gt;
+  &lt;li&gt;useradd consul&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;consul-server&quot;&gt;consul server&lt;/h4&gt;
+&lt;p&gt;192.168.0.12 node2&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;/etc/default/consul
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CONSUL_FLAGS=&quot;-server -ui -bootstrap-expect=1 -data-dir=/opt/consul/data -config-dir=/opt/consul/conf -pid-file=/opt/consul/run/consul.pid -client=0.0.0.0 -bind=192.168.0.12 -node=consul-server&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;/usr/lib/systemd/system/consul.service
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[Unit]
+Description=Consul service discovery agent
+Requires=network-online.target
+After=network-online.target
+[Service]
+User=consul
+Group=consul
+EnvironmentFile=-/etc/default/consul
+Environment=GOMAXPROCS=2
+Restart=on-failure
+ExecStartPre=[ -f &quot;/opt/consul/run/consul.pid&quot; ] &amp;amp;&amp;amp; /usr/bin/rm -f /opt/consul/run/consul.pid
+ExecStart=/usr/bin/consul agent $CONSUL_FLAGS
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+TimeoutStopSec=5
+[Install]
+WantedBy=multi-user.target
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;/usr/bin/consul&lt;/li&gt;
+  &lt;li&gt;/opt/consul/{data,run,conf}&lt;/li&gt;
+  &lt;li&gt;useradd consul&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;docker环境&quot;&gt;docker环境&lt;/h4&gt;
+&lt;p&gt;搭建简单web。https://hub.docker.com/r/crccheck/hello-world/&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ docker run -d -P crccheck/hello-world
+$ curl localhost:$port  #port为自动暴露的宿主机端口
+Hello World
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;registrator&quot;&gt;registrator&lt;/h3&gt;
+&lt;p&gt;client端装registator，结合docker API 实现服务自动发现、注册及注销，consul注册地址请注意填写agent地址，请勿直接注册进catalog。https://github.com/kaizamm/registrator&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ docker run -d \
+    --name=registrator \
+    --net=host \
+    --volume=/var/run/docker.sock:/tmp/docker.sock \
+    gliderlabs/registrator:latest \
+      consul://192.168.0.11:8500
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;几个常用api&quot;&gt;几个常用API&lt;/h3&gt;
+&lt;h4 id=&quot;deregister&quot;&gt;deregister&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;Datacenter&quot;: &quot;dc1&quot;,
+  &quot;Node&quot;: &quot;foobar&quot;
+}
+{
+  &quot;Datacenter&quot;: &quot;dc1&quot;,
+  &quot;Node&quot;: &quot;foobar&quot;,
+  &quot;CheckID&quot;: &quot;service:redis1&quot;
+}
+{
+  &quot;Datacenter&quot;: &quot;dc1&quot;,
+  &quot;Node&quot;: &quot;foobar&quot;,
+  &quot;ServiceID&quot;: &quot;redis1&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#删除这个该Node的及上面的所有service/heath check/
+curl -X PUT -d '{&quot;Datacenter&quot;:&quot;dc1&quot;,&quot;Node&quot;:&quot;consul-node-1&quot;}' 172.30.33.4:8500/v1/catalog/deregister
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;consul-template&quot;&gt;consul template&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;download地址: https://releases.hashicorp.com/consul-template/0.19.4/&lt;/li&gt;
+  &lt;li&gt;github地址：https://github.com/kaizamm/consul-template&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;consul-template -template &quot;in.tpl:out.txt&quot;   #根据in.tpl的模版文件生成out.txt，consult-template以daemon方式运行
+consul-template -template &quot;in.tpl:out.txt&quot; -once   #非daemon方式
+consul-template -template &quot;in.tpl:out.conf:service nginx -s reload&quot;  #第三个参数为要执行的动作
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;根据in.tpl生成out.conf&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+#in.tpl
+upstream hello-world {
+  {{ range service &quot;hello-world&quot;}}
+  server {{ .Address }}:{{ .Port }}; {{ end }}
+}
+
+server {
+  listen 8080;
+  location /{
+    proxy_pass http://hello-world;
+  }
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;运行以上consul-template，查看out.conf&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;upstream hello-world {
+
+  server 192.168.0.12:7777;
+  server 192.168.0.12:8888;
+}
+
+server {
+  listen 8080;
+  location /{
+    proxy_pass http://hello-world;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;到此为止，结合consul agent + consul template + consul registrator 就能实现服务发现与自动扩容&lt;/p&gt;
+
+&lt;h3 id=&quot;附supervisorcentos-6可用该方法&quot;&gt;附supervisor(centos 6可用该方法)&lt;/h3&gt;
+&lt;p&gt;对于redhat7可以采用systemctl对服务控制，对于centos6,则可以考虑用附supervisor对其进程进行管理
+http://supervisord.org/installing.html&lt;/p&gt;
+&lt;h4 id=&quot;pip-install&quot;&gt;pip install&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wget https://bootstrap.pypa.io/get-pip.py --no-check-cetificate
+python get-pip.py install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;如：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#cat /etc/supervisor/django.conf
+[program:django]
+directory = /usr/local/cmdb ;
+command = python manage.py runserver 0.0.0.0:7990 ;
+stdout_logfile = /opt/logs/supervisor/django_out.log ;
+stderr_logfile = /opt/logs/supervisor/django_err.log ;
+autostart = true ;
+startsecs = 5 ;
+autorestart = true ;
+startretries = 3 ;
+user = root ;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Fri, 17 Nov 2017 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2017/11/17/consul+docker+registrator/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2017/11/17/consul+docker+registrator/</guid>
+        
+        <category>project</category>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>javascript知识</title>
+        <description>&lt;h3 id=&quot;map&quot;&gt;map&lt;/h3&gt;
+&lt;p&gt;var f=function(x){
+  return x*x
+}
+var array=[1,2,3,4,5,6,7]
+var result=[]
+for (var i=0;i&amp;lt;array.length;i++){
+  result.push(f(array[i]))
+}&lt;/p&gt;
+
+&lt;h3 id=&quot;浏览器对象&quot;&gt;浏览器对象&lt;/h3&gt;
+
+&lt;h4 id=&quot;window&quot;&gt;window&lt;/h4&gt;
+
+&lt;p&gt;window对象不但可以当全局作用域，需且表示浏览器窗口。该对象有innerWidth和innerHeight属性，可以分别获取浏览器窗口的宽度和高度。内部完高是指除去菜单栏、工具栏、边框等占位元素后，用于显示网页的净宽高。对应的还有一个outerWidth和outerHeight属性，可以获取浏览器窗口的整个宽高度。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;alert('window inner size: '+ window.innerWidth + 'x' + window.innerHeight);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;navigator对象表示浏览器的信息最常用的属性包括&quot;&gt;navigator对象表示浏览器的信息，最常用的属性包括：&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;navigator.appName:浏览器的名称&lt;/li&gt;
+  &lt;li&gt;navigator.appVersion:浏览器的版本&lt;/li&gt;
+  &lt;li&gt;navigator.language:浏览器设置的语言&lt;/li&gt;
+  &lt;li&gt;navigator.paltform:操作系统类型&lt;/li&gt;
+  &lt;li&gt;navigator.userAgent:浏览器设定的User-Agent字符串&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;alert()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Wed, 08 Nov 2017 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2017/11/08/javascript%E7%AC%94%E8%AE%B0/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2017/11/08/javascript%E7%AC%94%E8%AE%B0/</guid>
+        
+        <category>document</category>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>consul服务发现</title>
+        <description>&lt;p&gt;文档主要来官网翻译 https://www.consul.io&lt;/p&gt;
+&lt;h3 id=&quot;什么是consul&quot;&gt;什么是consul&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Consul是个分布式、高可用的系统。此篇只介绍基础功能，深入的请移步&lt;a href=&quot;https://www.consul.io/docs/internals/architecture.html&quot;&gt;in-depth architecture overview&lt;/a&gt;。&lt;/li&gt;
+  &lt;li&gt;每个向consul提供服务的node节点都是一个consul agent。运行agent并不是为了服务发现或键值存储，而是为了健康检查。consul agent可以与多个consul servers通信。&lt;/li&gt;
+  &lt;li&gt;Consul agent就是数据存储和复制的地方。Servers选举出一个leader。官方推荐3至5个。每个Datacenter建议有一个cluster。&lt;/li&gt;
+  &lt;li&gt;需要发现其他服务和节点的组件可以查询任何consul servers和consul agents。agents自动同步查询请求到servers&lt;/li&gt;
+  &lt;li&gt;任何一个datacenter跑一个consul server cluster。当一个跨数据中心服务发现我配置的请求产生，本地的consul servers把这个请求发送到远端数据中心并返回结果。&lt;/li&gt;
+  &lt;li&gt;consul有多个组件，但总体来说，主要用于服务发现与配置。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;服务发现-service-discovery&quot;&gt;服务发现 Service Discovery&lt;/h4&gt;
+&lt;p&gt;Consul Client能提供service，如api/mysql，其他的Clients能用Consul发现Service的provider。使用DNS或HTTP,application可以很容易找到他们所依赖的service&lt;/p&gt;
+
+&lt;h4 id=&quot;健康检查-health-checking&quot;&gt;健康检查 Health Checking&lt;/h4&gt;
+&lt;p&gt;Consult Clients能提供多个健康检查，或者关联一个给定的service(一个返回200的webserver),或是一个本地的node(内存使用低于90%)。这些信息可以被用来当cluster health的指标，同是被service discovery组件在路由时避开不健康的host&lt;/p&gt;
+
+&lt;h4 id=&quot;键值存储-kv-store&quot;&gt;键值存储 KV Store&lt;/h4&gt;
+&lt;p&gt;键值存储，可利用HTTP API&lt;/p&gt;
+
+&lt;h4 id=&quot;多数据中心-multi-datacenter&quot;&gt;多数据中心 Multi Datacenter&lt;/h4&gt;
+
+&lt;h3 id=&quot;consul的安装&quot;&gt;consul的安装&lt;/h3&gt;
+&lt;p&gt;https://www.consul.io/intro/getting-started/install.html&lt;/p&gt;
+&lt;h3 id=&quot;run-the-consult-agent&quot;&gt;Run the Consult Agent&lt;/h3&gt;
+&lt;p&gt;当consult已经安装完成后，agent 要跑起来，agent可以以server或clent模式运行。每个dc必须得至少有一个server，建议最好有3至5个server。单个server的部署造成数据的丢失是不可避免的当碰到一个失败的情景时。其他所有的agent以client模式运行。一个client是一个非常经量的进程，用于注册服务、健康检查、和转发查询到servers。agent必须在cluster的每个node节点上运行。&lt;/p&gt;
+&lt;h4 id=&quot;start-the-agent&quot;&gt;Start the Agent&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# consul agent  -dev
+==&amp;gt; Starting Consul agent...
+==&amp;gt; Consul agent running!
+           Version: 'v1.0.0'
+           Node ID: 'd3649a7c-7030-127a-a17b-1600bb7df2a1'
+         Node name: 'node1'
+        Datacenter: 'dc1' (Segment: '&amp;lt;all&amp;gt;')
+            Server: true (Bootstrap: false)
+       Client Addr: [127.0.0.1] (HTTP: 8500, HTTPS: -1, DNS: 8600)
+      Cluster Addr: 127.0.0.1 (LAN: 8301, WAN: 8302)
+           Encrypt: Gossip: false, TLS-Outgoing: false, TLS-Incoming: false
+
+==&amp;gt; Log data will now stream in as it occurs:
+
+    2017/11/03 10:23:56 [DEBUG] Using random ID &quot;d3649a7c-7030-127a-a17b-1600bb7df2a1&quot; as node ID
+    2017/11/03 10:23:56 [INFO] raft: Initial configuration (index=1): [{Suffrage:Voter ID:d3649a7c-7030-127a-a17b-1600bb7df2a1 Address:127.0.0.1:8300}]
+    2017/11/03 10:23:56 [INFO] raft: Node at 127.0.0.1:8300 [Follower] entering Follower state (Leader: &quot;&quot;)
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;正如你所看到的，agent已经运行起来了，并且产生了很多日志，从日志可以看出来，agent以server模式运行，并声明了cluster的leadership。另外本地members都被标记为了cluster的健康成员。&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;注意：consul利用hostname当作默认的node name。如果你的hostname有周期，DNS在查询时会失效。为了避免这个问题，需明确地用 -node 指出该node的name&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;cluster-members&quot;&gt;Cluster Members&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;命令行查询&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[vagrant@node1 ~]$ consul members
+Node   Address         Status  Type    Build  Protocol  DC   Segment
+node1  127.0.0.1:8301  alive   server  1.0.0  2         dc1  &amp;lt;all&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Http API查询&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# curl localhost:8500/v1/catalog/nodes
+[
+    {
+        &quot;ID&quot;: &quot;d3649a7c-7030-127a-a17b-1600bb7df2a1&quot;,
+        &quot;Node&quot;: &quot;node1&quot;,
+        &quot;Address&quot;: &quot;127.0.0.1&quot;,
+        &quot;Datacenter&quot;: &quot;dc1&quot;,
+        &quot;TaggedAddresses&quot;: {
+            &quot;lan&quot;: &quot;127.0.0.1&quot;,
+            &quot;wan&quot;: &quot;127.0.0.1&quot;
+        },
+        &quot;Meta&quot;: {
+            &quot;consul-network-segment&quot;: &quot;&quot;
+        },
+        &quot;CreateIndex&quot;: 5,
+        &quot;ModifyIndex&quot;: 6
+    }
+]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;DNS API 查询node。注意你需要确保将你的DNS的记录指向默认端口为8600的Consul Agent的DNS服务&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# dig @127.0.0.1 -p 8600 node1.node.consul
+
+; &amp;lt;&amp;lt;&amp;gt;&amp;gt; DiG 9.9.4-RedHat-9.9.4-51.el7 &amp;lt;&amp;lt;&amp;gt;&amp;gt; @127.0.0.1 -p 8600 node1.node.consul
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; -&amp;gt;&amp;gt;HEADER&amp;lt;&amp;lt;- opcode: QUERY, status: NOERROR, id: 47502
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;node1.node.consul.		IN	A
+
+;; ANSWER SECTION:
+node1.node.consul.	0	IN	A	127.0.0.1
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#8600(127.0.0.1)
+;; WHEN: Mon Nov 06 02:17:24 GMT 2017
+;; MSG SIZE  rcvd: 62
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;stopping-agent&quot;&gt;stopping agent&lt;/h4&gt;
+&lt;p&gt;直接杀死进程后，该node将会被检测到失败，当一个member leave后，它的service和checks会从catalog中移除。当一个member fail时，它的health 仅会被标记为critical，但不会从Catalog中移除。consul会自动尝试去连接failed的nodes，当它恢复正常后，会将其加入到特定的network中。另外，如果一个agents以server的方式运行。强制leave会非常重要目的是为了避免潜在的协议异常。&lt;/p&gt;
+
+&lt;h3 id=&quot;registering-services&quot;&gt;Registering Services&lt;/h3&gt;
+&lt;p&gt;上一节讲了运行agent，cluster members的查看，node的查询。这一节我们将注册我们的第一个服务并查询。&lt;/p&gt;
+&lt;h4 id=&quot;defining-a-service&quot;&gt;Defining a Service&lt;/h4&gt;
+&lt;p&gt;register service有两种方式： service defining 和 连接 HTTP API ,service defining是最常用的方式。首先创建一个目录存放consul configuration。Consul从该目录加载所有配置文件。所以一般创建为/etc/consul.d。第二步，写一个service defining configuration文件。假定该服务的name为’web’，端口80.另外，给它一个tag ,我们可以利用它用另外一种方式来查询service。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 consul.d]# echo '{&quot;service&quot;:{&quot;name&quot;:&quot;web&quot;,&quot;tags&quot;:[&quot;rails&quot;],&quot;port&quot;:80}}' | tee /etc/consul.d/web.json
+{&quot;service&quot;:{&quot;name&quot;:&quot;web&quot;,&quot;tags&quot;:[&quot;rails&quot;],&quot;port&quot;:80}}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;现在重新运行agent&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# consul agent -dev -config-dir=/etc/consul.d/
+==&amp;gt; Starting Consul agent...
+...
+2017/11/06 02:43:39 [INFO] agent: Synced service 'web
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;quering-service&quot;&gt;Quering Service&lt;/h4&gt;
+&lt;p&gt;一旦agent运行和service synce后，我们可以利用DNS &amp;amp; HTTP API来查询该service.&lt;/p&gt;
+&lt;h5 id=&quot;dns-api&quot;&gt;DNS API&lt;/h5&gt;
+&lt;p&gt;首先我们利用DNS API来查询service。对于DNS API，该service的DNS name是NAME.service.consul。默认所有的DNS names就是该Consul的命名空间，尽管该项是可配置的。Service的子域告诉了consul我们要查询service。该NAME就是该service的名字。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 consul.d]# dig @127.0.0.1 -p 8600 web.service.consul
+...
+;; QUESTION SECTION:
+;web.service.consul.		IN	A
+;; ANSWER SECTION:
+web.service.consul.	0	IN	A	127.0.0.1
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;另，你可以得用DNS API去检索Address/Port对当成SRV记录&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dig @127.0.0.1 -p 8600 web.service.consul SRV
+...
+;; QUESTION SECTION:
+;web.service.consul.		IN	SRV
+
+;; ANSWER SECTION:
+web.service.consul.	0	IN	SRV	1 1 80 node1.node.dc1.consul.
+
+;; ADDITIONAL SECTION:
+node1.node.dc1.consul.	0	IN	A	127.0.0.1
+node1.node.dc1.consul.	0	IN	TXT	&quot;consul-network-segment=&quot;
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;最后我们也可以通过DNS API利用tags去过滤services&lt;/p&gt;
+&lt;h5 id=&quot;http-api&quot;&gt;HTTP API&lt;/h5&gt;
+&lt;p&gt;查询所有的node&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl http://localhost:8500/v1/catalog/service/web
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;查询通过健康检查的实例&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl 'http://localhost:8500/v1/health/service/web?passing'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;consul-cluster&quot;&gt;Consul Cluster&lt;/h3&gt;
+&lt;p&gt;当一个agent启动后，它是个孤立的。为了与其他members联系起来，需将其加入到一个clusert中。加入到一个存在的Cluster，只需要知道一个单独存在的members就行。加入后，该agent与其member会建立联系并一起discovery 该cluster中的其他members。在我们的上面例子中，，我们用-dev参数快速的启动了一个development server。然而，在cluster环境中并不适用。我们将省略该参数并指定我们的clustering flags。每个cluster中的node需有一个惟一的name。默认，使用hostname，但我们需要手动指定，利用 -node command-line option。我们同样要指定bind address。这个地址是Consul监听的地址，它同时需要让其他node能访问。尽管bind address不是严格必要，但最好还是提供一个。Consul默认监听系统中所有的IPV4接口，但如果发现有多个ipv4接口，则会启动报错。第一个node我们让其成为server,需用server switch指明它。”-bootstrap-expect”参数向Consul Server指明其他的我们希望加入的node的数量。”-enable_script_checks”参数用额外的script去health check。”config-dir” 参数指定配置目录。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=agent-one -bind=192.168.0.11 -enable-script-checks=true -config-dir=/etc/consul.d
+
+[root@node2 consul.d]# consul agent -data-dir=/tmp/consul -node=agent-two -bind=192.168.0.12 -enable-script-checks=true -config-dir=/etc/consul.d
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;现在启动了两个agent，一个server，一个client，相互独立，现在把client和server加入到一个cluster中来&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# consul join 192.168.0.12
+Successfully joined cluster by contacting 1 nodes.
+[vagrant@node2 ~]$ consul members
+Node       Address            Status  Type    Build  Protocol  DC   Segment
+agent-one  192.168.0.11:8301  alive   server  1.0.0  2         dc1  &amp;lt;all&amp;gt;
+agent-two  192.168.0.12:8301  alive   client  1.0.0  2         dc1  &amp;lt;default&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;health-checks&quot;&gt;Health Checks&lt;/h4&gt;
+&lt;p&gt;同service一样，check有两种方式，一个是check defining,另一个是通过http api创建合适的请求&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node2 vagrant]#  echo '{&quot;check&quot;:{&quot;name&quot;:&quot;ping&quot;,&quot;script&quot;:&quot;ping -c1 www.baidu.com&amp;gt;/dev/null&quot;,&quot;interval&quot;:&quot;30s&quot;}}' &amp;gt; /etc/consul.d/ping.json
+
+[root@node2 vagrant]#  echo '{&quot;service&quot;: {&quot;name&quot;: &quot;web&quot;, &quot;tags&quot;: [&quot;rails&quot;], &quot;port&quot;: 80,&quot;check&quot;: {&quot;script&quot;: &quot;curl localhost &amp;gt;/dev/null 2&amp;gt;&amp;amp;1&quot;, &quot;interval&quot;: &quot;10s&quot;}}}'&amp;gt;/etc/consul.d/web.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;上面的一个defining增加了一个check名字为ping。30s种检测，如：ping -c1 www.baidu.com；第二个改变了web service加入了一个check，每10s发送一个请求。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node2 consul.d]# consul agent -data-dir=/tmp/consul -node=agent-two -bind=192.168.0.12 -enable-script-checks=true -config-dir=/etc/consul.d
+==&amp;gt; Starting Consul agent...
+...
+2017/11/06 04:16:47 [WARN] agent: Check 'service:web' is now critical
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;最下面一行提示curl test失败，原因为没有运行web server&lt;/p&gt;
+
+&lt;h4 id=&quot;check-health-status&quot;&gt;Check Health Status&lt;/h4&gt;
+&lt;p&gt;现在我们可以加入一些简单的checks，我们可以用HTTP API去检查他们。首先我们可以通过command去查找falling checks。这个可以在任何一个node上运行。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vagrant@n1:~$ curl http://localhost:8500/v1/health/state/critical
+[{&quot;Node&quot;:&quot;agent-two&quot;,&quot;CheckID&quot;:&quot;service:web&quot;,&quot;Name&quot;:&quot;Service 'web' check&quot;,&quot;Status&quot;:&quot;critical&quot;,&quot;Notes&quot;:&quot;&quot;,&quot;ServiceID&quot;:&quot;web&quot;,&quot;ServiceName&quot;:&quot;web&quot;}]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;另外我们可以通过DNS查询web service。如果所有的servcie都不是unhealthy,那么Consul不会返回任何结果。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dig @127.0.0.1 -p 8600 web.service.consul
+...
+
+;; QUESTION SECTION:
+;web.service.consul.        IN  A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;kv-data&quot;&gt;KV DATA&lt;/h3&gt;
+&lt;p&gt;除了service discovery和helth checking，Consul可以提供KV存储。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ consul kv get redis/config/minconns
+Error! No key exists at: redis/config/minconns.
+
+$ consul kv put redis/config/minconns 1
+Success! Data written to: redis/config/minconns
+
+$ consul kv put redis/config/maxconns 25
+Success! Data written to: redis/config/maxconns
+
+$ consul kv get redis/config/minconns
+
+$ consul kv get -detailed redis/config/minconns
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;consul-web-ui&quot;&gt;Consul Web UI&lt;/h3&gt;
+&lt;p&gt;Consul提供一个UI。UI可以用于浏览所有的service和nodes，以及读写key/value数据，支持multi-datacenter&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ consul agent -ui
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;UI的端口与HTTP API的端口一样，默认地址为http://localhost:8500/ui&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;注：”-client”指定要将HTTP绑定到IP，绑定到一个外部IP，否则只能从本机进行访问。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;agent-http-api&quot;&gt;Agent HTTP API&lt;/h3&gt;
+
+&lt;h4 id=&quot;list-members&quot;&gt;List Members&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# curl 192.168.0.11:8500/v1/agent/members
+[{&quot;Name&quot;:&quot;agent-one&quot;,&quot;Addr&quot;:&quot;192.168.0.11&quot;,&quot;Port&quot;:8301,&quot;Tags&quot;:{&quot;bootstrap&quot;:&quot;1&quot;,&quot;build&quot;:&quot;1.0.0:51ea240&quot;,&quot;dc&quot;:&quot;dc1&quot;,&quot;id&quot;:&quot;869d2f5b-36d9-2692-86d6-18d20d203da0&quot;,&quot;port&quot;:&quot;8300&quot;,&quot;raft_vsn&quot;:&quot;3&quot;,&quot;role&quot;:&quot;consul&quot;,&quot;segment&quot;:&quot;&quot;,&quot;vsn&quot;:&quot;2&quot;,&quot;vsn_max&quot;:&quot;3&quot;,&quot;vsn_min&quot;:&quot;2&quot;,&quot;wan_join_port&quot;:&quot;8302&quot;},&quot;Status&quot;:1,&quot;ProtocolMin&quot;:1,&quot;ProtocolMax&quot;:5,&quot;ProtocolCur&quot;:2,&quot;DelegateMin&quot;:2,&quot;DelegateMax&quot;:5,&quot;DelegateCur&quot;:4},{&quot;Name&quot;:&quot;agent-two&quot;,&quot;Addr&quot;:&quot;192.168.0.12&quot;,&quot;Port&quot;:8301,&quot;Tags&quot;:{&quot;build&quot;:&quot;1.0.0:51ea240&quot;,&quot;dc&quot;:&quot;dc1&quot;,&quot;id&quot;:&quot;c79f338c-ee64-2389-ac3f-01bfcfb02c3f&quot;,&quot;role&quot;:&quot;node&quot;,&quot;segment&quot;:&quot;&quot;,&quot;vsn&quot;:&quot;2&quot;,&quot;vsn_max&quot;:&quot;3&quot;,&quot;vsn_min&quot;:&quot;2&quot;},&quot;Status&quot;:1,&quot;ProtocolMin&quot;:1,&quot;ProtocolMax&quot;:5,&quot;ProtocolCur&quot;:2,&quot;DelegateMin&quot;:2,&quot;DelegateMax&quot;:5,&quot;DelegateCur&quot;:4}]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h5 id=&quot;parameters&quot;&gt;Parameters&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;wan(bool:false)-指定列出WAN members而不是LAN members(默认)。该参数只适用于以server mode运行的agents，它在URL后面作为一个query参数传入。&lt;/li&gt;
+  &lt;li&gt;segment(string: “”)-指定列出members的一部份。
+    &lt;h5 id=&quot;sample-request&quot;&gt;Sample Request&lt;/h5&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@node1 ~]# curl http://192.168.0.11:8500/v1/agent/members
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;h4 id=&quot;read-configuration&quot;&gt;Read Configuration&lt;/h4&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;sample-request-1&quot;&gt;Sample Request&lt;/h5&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl \
+    https://consul.rocks/v1/agent/self
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;reload-agent&quot;&gt;Reload Agent&lt;/h4&gt;
+&lt;h5 id=&quot;sample-request-2&quot;&gt;Sample Request&lt;/h5&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl \
+    --request PUT \
+    https://consul.rocks/v1/agent/reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;enable-maintenance-mode&quot;&gt;Enable Maintenance Mode&lt;/h4&gt;
+
+&lt;h5 id=&quot;parameters-1&quot;&gt;Parameters&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;enable (bool: &lt;required&gt;) - Specifies whether to enable or disable maintenance mode. This is specified as part of the URL as a query string parameter.&lt;/required&gt;&lt;/li&gt;
+  &lt;li&gt;reason(string: “”) - Specifies a text string explaining the reason for placing the node into maintenance mode. This is simply to aid human operators. If no reason is provided, a default value will be used instead. This is specified as part of the URL as a query string parameter, and, as such, must be URI-encoded.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;sample-request-3&quot;&gt;Sample Request&lt;/h5&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl \
+    --request PUT \
+    https://consul.rocks/v1/agent/maintenance?enable=true&amp;amp;reason=For+API+docs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;更多详见https://www.consul.io/api/agent.html&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl https://consul.rocks/v1/agent/join/1.2.3.4
+$ curl https://consul.rocks/v1/agent/monitor
+$ curl https://consul.rocks/v1/agent/metrics
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Fri, 03 Nov 2017 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2017/11/03/consul%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2017/11/03/consul%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0/</guid>
+        
+        <category>consul</category>
+        
+        
+        <category>document</category>
+        
+      </item>
+    
+      <item>
+        <title>redis消息发布与订阅</title>
+        <description>&lt;h3 id=&quot;python-与-redis&quot;&gt;python 与 redis&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;安装
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; pip install redis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;redis使用
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; import redis
+ r = redis.StrictRedis() # 默认为127.0.0.1，端口2379
+ r = redis.StrictRedis(host='127.0.0.1',port=6379,db=0) #显式地指定需要连接的地址
+ r.set('foo','bar')  #True
+ r.get('foo') #'bar'
+ r.sadd('websit','yahoo')  #加入集合
+ r.sadd('websit','google')  
+ r.smembers('website')  # {'google', 'yahoo'}
+ r.hmset('dict',{'name':'Bob'})  #存储字典
+ people = r.hgetall('dict')
+ print people  #{'name':&quot;Bob&quot;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;事务和管道
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pipe = r.pipeline
+pipe.set('foo','bar')
+pipe.get('foo')
+result = pipe.execute()
+print result
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;实践webpy及redis实现在线好友&quot;&gt;实践：web.py及redis实现在线好友&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;代码&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# coding:utf-8&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;web&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;redis&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StrictRedis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''
+配置路由规则
+'/': 模拟用户的访问
+'/online': 查看在线用户
+'''&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;urls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'visit'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'/online'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'online'&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;'''返回当前时间的对应的键名
+如28分对应的键名是active.users:28
+'''&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;time_to_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'active.users:'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;'''返回最近10分钟的键名
+结果是列表类型
+'''&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;keys_in_last_10_minutes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;now&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time_to_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;visit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;'''模拟用户访问
+  将用户的User agent作为用户的ID加入到当前时间对应的键中
+  '''&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'HTTP_USER_AGENT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;current_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time_to_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;pipe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;pipe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sadd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;err&quot;&gt;设置键的生存时间为&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;分钟&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;pipe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;expire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;pipe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'User:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\t&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Key:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\t&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;circle:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n\t&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;smembers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;#return &quot;circle:&quot; + r.smembers(user_id)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;online&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;'''查看当前在线的用户列表'''&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;online_users&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sunion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys_in_last_10_minutes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;online_users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'User agent:'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'__main__'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;globals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;效果图&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;![效果图1][效果图1]
+[效果图1]: ./redis消息发布与订阅/效果图1.png&lt;/p&gt;
+
+&lt;p&gt;![效果图2][效果图2]
+[效果图2]: ./redis消息发布与订阅/效果图2.png&lt;/p&gt;
+
+&lt;p&gt;![效果图3][效果图3]
+[效果图3]: ./redis消息发布与订阅/效果图3.png&lt;/p&gt;
+</description>
+        <pubDate>Thu, 26 Oct 2017 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2017/10/26/redis%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2017/10/26/redis%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85/</guid>
+        
+        <category>project</category>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>jquery</title>
+        <description>&lt;h3 id=&quot;jquery语法&quot;&gt;jquery语法&lt;/h3&gt;
+&lt;p&gt;通过jquery，可以选取（查询，query）HTML元素，并对它们执行“操作”actions；
+$(selector).action():美元符号定义jquery,选择符selector查询和查找HTML元素；jquery的action()执行对元素的操作&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(this).hide() 隐藏当前元素
+$(&quot;p&quot;).hide() 隐藏所有&amp;lt;p&amp;gt;元素
+$(&quot;p.test&quot;).hide()  隐藏所有 class=&quot;test&quot;的&amp;lt;p&amp;gt;元素
+$(&quot;#test&quot;).hide() 隐藏所有id=&quot;test&quot;的元素
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;文档就绪事件&quot;&gt;文档就绪事件&lt;/h3&gt;
+&lt;p&gt;也许你会发现在很多实例中所有的jQuery函数位于一个document ready函数中&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(document).ready(function(){
+  //开始写jQuery代码..  
+  })
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;这是为了防止在文档完全加载之前运行jQuery代码，即在DOM加载完成后才可以对DOM进行操作。因为如果在文档未加载完全之前运行有可能失败。简介写法，与上面完全等效：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(function(){
+  //开始写jQuery代码
+  })
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;jquery选择器&quot;&gt;jQuery选择器&lt;/h3&gt;
+&lt;p&gt;jQuery选择器允许你对HTML元素组或单个元素进行操作。选择器基于元素的id、类、类型、属性、属性值等查找选择HTML元素。jQuery中所有的选择器都以$()开头。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;基于元素名选取元素
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# $(&quot;p&quot;)
+$(document).ready(function(){
+$(&quot;button&quot;).click(function(){
+  $(&quot;p&quot;).hide();
+  })
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;基于id
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# $(&quot;#test&quot;)
+$(document).ready(function(){
+$(&quot;button&quot;).click(function(){
+  $(&quot;#test&quot;).hide();
+  })
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;.class
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# $(&quot;.test&quot;)
+$(document).ready(function(){
+$(&quot;button&quot;).click(function(){
+  $(&quot;.test&quot;).hide();
+  })
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;jquery事件&quot;&gt;jQuery事件&lt;/h3&gt;
+&lt;p&gt;页面对不同访问者的响应叫做事件。事件处理程序是当HTML中发生某些事件时所调用的方法。如实例“在元素上移动鼠标、选取单选按钮、点击元素”，在事件中经常用的术“触发、激发”，如“当您按键时触发keypress事件”
+常见的DOM事件：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;鼠标事件&lt;/th&gt;
+      &lt;th&gt;键盘事件&lt;/th&gt;
+      &lt;th&gt;表单事件&lt;/th&gt;
+      &lt;th&gt;文档/窗口事件&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;click&lt;/td&gt;
+      &lt;td&gt;keypress&lt;/td&gt;
+      &lt;td&gt;submit&lt;/td&gt;
+      &lt;td&gt;load&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dblclick&lt;/td&gt;
+      &lt;td&gt;keydown&lt;/td&gt;
+      &lt;td&gt;change&lt;/td&gt;
+      &lt;td&gt;resize&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;mouseenter&lt;/td&gt;
+      &lt;td&gt;keyup&lt;/td&gt;
+      &lt;td&gt;focus&lt;/td&gt;
+      &lt;td&gt;scroll&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;mouseleave&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;blur&lt;/td&gt;
+      &lt;td&gt;upload&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&quot;语法&quot;&gt;语法&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#页面中指定一个点击事件
+$(&quot;p&quot;).click;
+#下一步定义什么时间触发事件，通过事件函数实现
+$(&quot;p&quot;).click(function(){
+  //动作触发后执行的代码
+  })
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;jquery捕获&quot;&gt;jQuery捕获&lt;/h3&gt;
+&lt;p&gt;获取内容和属性。DOM操作（文档对象模型，定义访问HTML和XML文档的标准）&lt;/p&gt;
+&lt;h4 id=&quot;获取内容&quot;&gt;获取内容&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;text() : 设置或返回选取元素的文本内容&lt;/li&gt;
+  &lt;li&gt;html() ： 元素内容，包括HTML标记&lt;/li&gt;
+  &lt;li&gt;val() ： 表单字段的值
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(&quot;#btn1&quot;).click(function(){
+alert(&quot;Text: &quot; + $(&quot;#test&quot;).text());
+});
+$(&quot;#btn2&quot;).click(function(){
+alert(&quot;HTML: &quot; + $(&quot;#test&quot;).html());
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;h4 id=&quot;获取元素&quot;&gt;获取元素&lt;/h4&gt;
+  &lt;/li&gt;
+  &lt;li&gt;attr()&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;设置内容和属性&quot;&gt;设置内容和属性&lt;/h3&gt;
+&lt;h4 id=&quot;设置内容&quot;&gt;设置内容&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;text() : 设置或返回选取元素的文本内容&lt;/li&gt;
+  &lt;li&gt;html() ： 元素内容，包括HTML标记&lt;/li&gt;
+  &lt;li&gt;val() ： 表单字段的值
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(&quot;#btn1&quot;).click(function(){
+  $(&quot;#test1&quot;).text(&quot;Hello world!&quot;);
+});
+$(&quot;#btn2&quot;).click(function(){
+  $(&quot;#test2&quot;).html(&quot;&amp;lt;b&amp;gt;Hello world!&amp;lt;/b&amp;gt;&quot;);
+});
+$(&quot;#btn3&quot;).click(function(){
+  $(&quot;#test3&quot;).val(&quot;RUNOOB&quot;);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;h4 id=&quot;设置属性&quot;&gt;设置属性&lt;/h4&gt;
+  &lt;/li&gt;
+  &lt;li&gt;attr()
+    &lt;h3 id=&quot;jquery--ajax&quot;&gt;jQuery  Ajax&lt;/h3&gt;
+    &lt;p&gt;ajax是与服务器交换数据的技术，它在不重载全部页面的情况下，实现了对部份网页的更新&lt;/p&gt;
+    &lt;h4 id=&quot;语法-1&quot;&gt;语法&lt;/h4&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$.ajax({name:value, name:value, ... })
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;名称&lt;/th&gt;
+      &lt;th&gt;值/描述&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;async&lt;/td&gt;
+      &lt;td&gt;布尔值，表示请求是否异步处理。默认是 true。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;beforeSend(xhr)&lt;/td&gt;
+      &lt;td&gt;发送请求前运行的函数。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;cache&lt;/td&gt;
+      &lt;td&gt;布尔值，表示浏览器是否缓存被请求页面。默认是 true。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;complete(xhr,status)&lt;/td&gt;
+      &lt;td&gt;请求完成时运行的函数（在请求成功或失败之后均调用，即在 success 和 error 函数之后）。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;contentType&lt;/td&gt;
+      &lt;td&gt;发送数据到服务器时所使用的内容类型。默认是：”application/x-www-form-urlencoded”。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;context&lt;/td&gt;
+      &lt;td&gt;为所有 AJAX 相关的回调函数规定 “this” 值。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;data&lt;/td&gt;
+      &lt;td&gt;规定要发送到服务器的数据。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dataFilter(data,type)&lt;/td&gt;
+      &lt;td&gt;用于处理 XMLHttpRequest 原始响应数据的函数。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dataType&lt;/td&gt;
+      &lt;td&gt;预期的服务器响应的数据类型。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;error(xhr,status,error)&lt;/td&gt;
+      &lt;td&gt;如果请求失败要运行的函数。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;global&lt;/td&gt;
+      &lt;td&gt;布尔值，规定是否为请求触发全局 AJAX 事件处理程序。默认是 true。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ifModified&lt;/td&gt;
+      &lt;td&gt;布尔值，规定是否仅在最后一次请求以来响应发生改变时才请求成功。默认是 false。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;jsonp&lt;/td&gt;
+      &lt;td&gt;在一个 jsonp 中重写回调函数的字符串。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;jsonpCallback&lt;/td&gt;
+      &lt;td&gt;在一个 jsonp 中规定回调函数的名称。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;password&lt;/td&gt;
+      &lt;td&gt;规定在 HTTP 访问认证请求中使用的密码。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;processData&lt;/td&gt;
+      &lt;td&gt;布尔值，规定通过请求发送的数据是否转换为查询字符串。默认是 true。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;scriptCharset&lt;/td&gt;
+      &lt;td&gt;规定请求的字符集。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;success(result,status,xhr)&lt;/td&gt;
+      &lt;td&gt;当请求成功时运行的函数。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;timeout&lt;/td&gt;
+      &lt;td&gt;设置本地的请求超时时间（以毫秒计）。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;traditional&lt;/td&gt;
+      &lt;td&gt;布尔值，规定是否使用参数序列化的传统样式。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;type&lt;/td&gt;
+      &lt;td&gt;规定请求的类型（GET 或 POST）。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;url&lt;/td&gt;
+      &lt;td&gt;规定发送请求的 URL。默认是当前页面。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;username&lt;/td&gt;
+      &lt;td&gt;规定在 HTTP 访问认证请求中使用的用户名。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;xhr&lt;/td&gt;
+      &lt;td&gt;用于创建 XMLHttpRequest 对象的函数。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;charset=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;菜鸟教程(runoob.com)&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ready&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;click&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+		&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;demo_test.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;#div1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}});&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;div1&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;h2&amp;gt;&lt;/span&gt;使用 jQuery AJAX 修改文本内容&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;button&amp;gt;&lt;/span&gt;获取其他内容&lt;span class=&quot;nt&quot;&gt;&amp;lt;/button&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;load&quot;&gt;load()&lt;/h4&gt;
+&lt;p&gt;load()方法从服务器加载数据并把返回的数据放入被选的元素中。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#语法
+$(selector).load(URL,data,callback);
+#URL希望加载的URL;可选的data与请求一同发送的查询字符串键值对集合；可选的callback参数是load()完成后所执行的函数。
+#可选的 callback 参数规定当 load() 方法完成后所要允许的回调函数。回调函数可以设置不同的参数：
+#    responseTxt - 包含调用成功时的结果内容
+#    statusTXT - 包含调用的状态
+#    xhr - 包含 XMLHttpRequest 对象
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(&quot;#div1&quot;).load(&quot;demo_test.txt&quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(&quot;button&quot;).click(function(){
+  $(&quot;#div1&quot;).load(&quot;demo_test.txt&quot;,function(responseTxt,statusTxt,xhr){
+    if(statusTxt==&quot;success&quot;)
+      alert(&quot;外部内容加载成功!&quot;);
+    if(statusTxt==&quot;error&quot;)
+      alert(&quot;Error: &quot;+xhr.status+&quot;: &quot;+xhr.statusText);
+  });
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;get-post&quot;&gt;GET POST&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;$.get() 方法通过 HTTP GET 请求从服务器上请求数据。
+语法：
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$.get(URL,callback);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;如：
+```
+&amp;lt;!DOCTYPE html&amp;gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;
+&lt;script src=&quot;http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js&quot;&gt;
+&lt;/script&gt;
+&lt;script&gt;
+$(document).ready(function(){
+	$(&quot;button&quot;).click(function(){
+		$.get(&quot;/try/ajax/demo_test.php&quot;,function(data,status){
+			alert(&quot;数据: &quot; + data + &quot;\n状态: &quot; + status);
+		});
+	});
+});
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;button&gt;发送一个 HTTP GET 请求并获取返回结果&lt;/button&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
++ $.post() 方法通过 HTTP POST 请求从服务器上请求数据。
+语法
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;$.post(URL,data,callback);
+#必需的 URL 参数规定您希望请求的 URL。
+#可选的 data 参数规定连同请求发送的数据。
+#可选的 callback 参数是请求成功后所执行的函数名&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;如：
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/p&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;
+&lt;script src=&quot;http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js&quot;&gt;
+&lt;/script&gt;
+&lt;script&gt;
+$(document).ready(function(){
+	$(&quot;button&quot;).click(function(){
+		$.post(&quot;/try/ajax/demo_test_post.php&quot;,{
+			name:&quot;菜鸟教程&quot;,
+			url:&quot;http://www.runoob.com&quot;
+		},
+		function(data,status){
+			alert(&quot;数据: \n&quot; + data + &quot;\n状态: &quot; + status);
+		});
+	});
+});
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;button&gt;发送一个 HTTP POST 请求页面并获取返回内容&lt;/button&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;p&gt;```&lt;/p&gt;
+</description>
+        <pubDate>Wed, 27 Sep 2017 20:00:00 +0800</pubDate>
+        <link>https://kaizamm.github.io/2017/09/27/jquery/</link>
+        <guid isPermaLink="true">https://kaizamm.github.io/2017/09/27/jquery/</guid>
+        
+        <category>document</category>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+  </channel>
+</rss>
