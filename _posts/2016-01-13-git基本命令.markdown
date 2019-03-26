@@ -168,3 +168,47 @@ $ git push
 这样做的好处是，远程主干上的历史永远是线性的。每个人在本地分支解决冲突，不会在主干上产生冲突。
 
 > 当出现history-not-related时，git merge --allow-unrelated-histories a b
+
+### 补充
+
+1. git clone了仓库代码，现在要在本地修改一个文件后，提交到远程分支上去，非master，如何做？
+
+```
+git clone https:xxx.git
+git checkot -b local_branch origin/remote_branch_name
+git add .
+git commit -m "add files"
+git push
+```
+
+2. 远程仓库clone下来后，现在把里面的一个文件改动了，但我不想改了，想还原怎么办？
+```
+git checkout -- file
+```
+那要是我已经git add .呢，现在要怎么还原？
+```
+git reset HEAD <file>
+```
+要是我已经提交了呢git commit -m "modify file"?
+
+
+```
+#这个分两种情况，一种情况是要不要保留暂存区？说白了就是，要不要保留现在已经 git add .后等待git commit的东西
+
+#要是不保留，就用hard：
+git reset --hard HEAD^
+#要是保留，就用soft
+git reset --soft HEAD^
+```
+
+3. 经常出现一种情况，就是自己本地的分支在修改后，提交时出现了冲突，而且在git status看时出现好多杂七杂八的文件，现在怎么办？？
+
+一般如果出现这种情况，如果自己改动的不多，一种比较懒的方法就是暂时把这个分支上的东西git commit 后把这个分支删除，然后切回master分支后，git pull拉下最新的代码，然后进行之前的操作提交应该没问题；但是这并不是治本的方法，根本的方法是：解决冲突--提交代码，那么如何解决冲突呢？
+
+如果有时间就看看廖雪峰写的[参考](https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000)
+
+如果没时间研究，就按以下的步骤来操作
+
+1. 先git diff能看到冲突的文件，一般来说不会很多，顶多一两个文件的冲突，如果出现大批量的冲突。。。经验告诉你，很有可能Push到了错的分支。解决冲突其实也比较简单，就那么一两行自己进这个文件，留下当前正确的代码后，提交并push到远程就可以解决
+
+2. 如果比较多，可以借助pycharm来看。
