@@ -57,14 +57,14 @@ id pool      image snap device
 [root@node1 my-cluster]# rbd device ls
 ```
 
-<table><tr><td bgcolor=gray>
+<table><tr><td bgcolor="gray">
 将ceph.client.admin.keyring拷备到需要挂载的节点/etc/ceph下后，可以直接用ceph命令行工具来访问集群进行操作
 </td></tr></table>
 
 ### 快照
 快照是映像在某个特定时间点的一份只读副本。 Ceph 块设备的一个高级特性就是你可以为映像创建快照来保留其历史。 Ceph 还支持分层快照，让你快速、简便地克隆映像（如 VM 映像）。 Ceph 的快照功能支持 rbd 命令和多种高级接口，包括 QEMU 、 libvirt 、 OpenStack 和 CloudStack 。
 
-<table><tr><td bgcolor=gray>
+<table><tr><td bgcolor="gray">
 注意：在做快照时尽量停止IO操作，不然获取不到最新的数据，停止io操作的命令是fsfreeze，[命令的中文man](http://www.mplinux.com/util-linux/fsfreeze8.html)
 </td></tr></table>
 ```
