@@ -1,7 +1,7 @@
 ---
 layout: post
-published: false
-title:  Promethus与zabbix的优劣对
+published: true
+title:  Promethus与zabbix的优劣对比
 categories: [document]
 tags: [promethus]
 ---
