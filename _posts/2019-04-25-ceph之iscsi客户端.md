@@ -1,9 +1,9 @@
 ---
 layout: post
 published: true
-title:  iscsi
+title:  ceph-iscsi之客户端
 categories: [document]
-tags: [iscsi]
+tags: [iscsi,ceph]
 ---
 * content
 {:toc}
@@ -146,7 +146,7 @@ tail -f /var/log/messages
 
 如果你的 iSCSI target 可能因为某些原因被拿走了，或者是已经不存在于你的区网中，或者是要送修了～ 这个时候你的 iSCSI initiator 总是得要关闭吧！但是，又不能全部关掉 (/etc/init.d/iscsi stop)， 因为还有其他的 iSCSI target 在使用。这个时候该如何取消不要的 target 呢？很简单！流程如下
 ```
-# iscsiadm -m node -T targetname --logout
+# iscsiadm -m node -T targetname --logout  #注意target类似于iqn.2011-08.vbird.centos:vbirddisk
 iscsiadm -m node -o [delete|new|update] -T targetname
 
 范例：关闭来自鸟哥的 iSCSI target 的数据，并且移除链接
@@ -175,3 +175,5 @@ iscsiadm: no records found! <==嘿嘿！不存在这个 target 了～
 /etc/init.d/iscsid：让本机模拟成为 iSCSI initiater 的主要服务；
 /etc/init.d/iscsi：在本机成为 iSCSI initiator 之后，启动此脚本，让我们可以登入 iSCSI target。所以 iscsid 先启动后，才能启动这个服务。为了防呆，所以 /etc/init.d/iscsi 已经写了一个启动指令， 启动 iscsi 前尚未启动 iscsid ，则会先呼叫 iscsid 才继续处理 iscsi 喔！
 ```
+
+###
