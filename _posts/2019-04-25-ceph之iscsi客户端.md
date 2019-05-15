@@ -9,9 +9,12 @@ tags: [iscsi,ceph]
 {:toc}
 
 ### 前言
-
+[csdn](https://www.cnblogs.com/netonline/p/10432653.html)
+[官网](https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/block_device_guide/using_an_iscsi_gateway#monitoring_the_iscsi_gateways)
 [参考一](https://www.cyberciti.biz/tips/rhel-centos-fedora-linux-iscsi-howto.html)
 [鸟哥](http://cn.linux.vbird.org/linux_server/0460iscsi.php)
+
+
 iSCSI（Internet Small Computer System Interface，发音为/ˈаɪskʌzi/），Internet小型计算机系统接口，又称为IP-SAN，是一种基于因特网及SCSI-3协议下的存储技术，由IETF提出，并于2003年2月11日成为正式的标准。与传统的SCSI技术比较起来，iSCSI技术有以下三个革命性的变化：
 
 1. 把原来只用于本机的SCSI协议透过TCP/IP网络发送，使连接距离可作无限的地域延伸；
@@ -25,6 +28,37 @@ iSCSI利用了TCP/IP的port 860 和 3260 作为沟通的渠道。透过两部计
 LUN（Logical Unit Number，逻辑单元号）是为了使用和描述更多设备及对象而引进的一个方法，每个SCSI ID上最多有32个LUN，一个LUN对应一个逻辑设备。
 
 iSCSI 主要是透过 TCP/IP 的技术，将储存设备端透过 iSCSI target (iSCSI 目标) 功能，做成可以提供磁盘的服务器端，再透过 iSCSI initiator (iSCSI 初始化用户) 功能，做成能够挂载使用 iSCSI target 的客户端
+
+
+# iscsi-gateway服务
+```
+# 服务需要在所有iscsi-gateway节点启动，以ceph01节点为例；
+# 在启动”rbd-target-api”服务的同时，会启动”rbd-target-gw”服务；
+# 注意提前创建”rbd” pool，rbd-target-api依赖于rbd-target-gw，rbd-target-gw服务依赖于”rbd”池
+[root@ceph01 ~]# systemctl daemon-reload
+[root@ceph01 ~]# systemctl enable rbd-target-api
+[root@ceph01 ~]# systemctl start rbd-target-api
+[root@ceph01 ~]# systemctl status rbd-target-api ; systemctl status rbd-target-gw
+```
+
+### 安装 gwtop
+
+```
+#安装ceph-iscsi-tools，依旧找不到安装包
+git clone https://github.com/ceph/ceph-iscsi-tools.git
+cd ceph-iscsi-tools
+python setup.py install --install-scripts=/usr/bin
+
+#安装pcp和安装启动pcp-pmda-lio
+yum install pcp
+yum install pcp-pmda-lio
+systemctl enable pmcd
+systemctl start pmcd
+
+#注册pcp-pmda-lio代理
+cd /var/lib/pcp/pmdas/lio
+./Install
+```
 
 ### 架构
 iSCSI 这个架构主要将储存装置与使用的主机分为两个部分，分别是：
@@ -75,7 +109,7 @@ iqn.年年-月.单位网域名的反转写法  :这个分享的target名称
 
 iqn.2011-08.vbird.centos:vbirddisk
 ```
-另外，就如同一般外接式储存装置 (target 名称) 可以具有多个磁盘一样，我们的 target 也能够拥有数个磁盘装置的。 每个在同一个 target 上头的磁盘我们可以将它定义为逻辑单位编号 (Logical Unit Number, LUN)。我们的 iSCSI initiator 就是跟 target 协调后才取得 LUN 的存取权就是了 (注5)。在鸟哥的这个简单案例中，最终的结果，我们会有一个 target ，在这个 target 当中可以使用三个 LUN 的磁盘。
+另外，就如同一般外接式储存装置 (target 名称) 可以具有多个磁盘一样，我们的 target 也能够拥有数个磁盘装置的。 每个在同一个 target 上头的磁盘我们可以将它定义为逻辑单位编号 (Logical Unit Number, LUN)。我们的 iSCSI initiator 就是跟 target 协调后才取得 LUN 的存取权就是了。在鸟哥的这个简单案例中，最终的结果，我们会有一个 target ，在这个 target 当中可以使用三个 LUN 的磁盘。
 
 ### 安装
 ```
@@ -167,6 +201,25 @@ iscsiadm: no records found! <==嘿嘿！不存在这个 target 了～
 
 [root@clientlinux ~]# /etc/init.d/iscsi restart
 ```
+简单介绍
+```
+iscsiadm的使用分为三步
+第一：发现目标（发现成功后会在/var/lib/iscsi/nodes/目录下生成响应的记录文件）
+	iscsiadm --mode discovery --type sendtargets --portal 192.168.1.55
+	iscsiadm -m discovery -t sendtargets -p 192.168.1.1:3260
+第二：登录节点
+	iscsiadm -m node –T iqn.1994-05.com.redhat:wsfnk -p 192.168.1.1：3260 -l
+	iscsiadm -m node –T iqn.1994-05.com.redhat:wsfnk -p 192.168.1.1:3260 -o update -n node.startup -v automatic	#在系统启动时自动登录
+	iscsiadm -m node -T iqn.1994-05.com.redhat:wsfnk -l	#（登陆某个目标器）
+	iscsiadm -m node -L all				#（登陆发现的所有目标器）
+	iscsiadm -d2 -m node --login			#（登陆发现的所有目标器）
+第三：登出节点
+	iscsiadm -m node -T iqn.1994-05.com.redhat:wsfnk -u	#（退出某个目标器）
+	iscsiadm -m node -U all		#（退出所有登陆的目标器）
+	iscsiadm -d2 -m node --logout	#（退出所有登陆的目标器）
+	iscsiadm -m node -o delete –T  iqn.1994-05.com.redhat:wsfnk -p 192.168.14.112		#连接死掉（断网或者target端断掉）时
+```
+
 ### 文件的介绍
 ```
 /etc/iscsi/iscsid.conf：主要的配置文件，用来连结到 iSCSI target 的设定；
@@ -175,5 +228,3 @@ iscsiadm: no records found! <==嘿嘿！不存在这个 target 了～
 /etc/init.d/iscsid：让本机模拟成为 iSCSI initiater 的主要服务；
 /etc/init.d/iscsi：在本机成为 iSCSI initiator 之后，启动此脚本，让我们可以登入 iSCSI target。所以 iscsid 先启动后，才能启动这个服务。为了防呆，所以 /etc/init.d/iscsi 已经写了一个启动指令， 启动 iscsi 前尚未启动 iscsid ，则会先呼叫 iscsid 才继续处理 iscsi 喔！
 ```
-
-###
