@@ -265,3 +265,34 @@ Untracked files:
 
 	bb
 ```
+
+### 高阶用法
++ `git cherry`  
+git cherry是查看当前本地已提交且还没push到远程的commit_id
+
++ `git cherry-pick <commit_id>`
+把某次的commit代码拿过来；
++ `git cherry_pick <start-commit-id>…<end-commit-id>`   
+批量把某一批commit代码拿过，它的范围就是 start-commit-id 到 end-commit-id 之间所有的 commit，但是它这是一个 (左开，右闭] 的区间，也就是说，它将不会包含 start-commit-id 的 commit。  
+  而如果想要包含 start-commit-id 的话，就需要使用 ^ 标记一下，就会变成一个 [左闭，右闭] 的区间    
+`git cherry-pick <start-commit-id>^...<end-commit-id>`    
+
++ `git stash save/list/drop/apply/show/branch`   
+应用场景：如现在工作区及暂存区有些文件，还没有提交，但是现在要切换到其他分区去做些hotfix；这时我们就可以执行stash把当前的工作状态保存起来，相当有用；save可以加上自己的common；单独说下branch；git stash branch <branchname>会基于当前的分支创建一个新的分支，并且把当前的工作区文件全部恢复过去，同时它会把原分支的这个stash删掉，也很有用，不过有stash功能，这个基本也可以不用；
++ git format-path origin/master  
+这个是打patch，把当前基于origin/master的已经提交的commit全部打成patch；这个format-patch可以基于一个具体commit id来打，也可以基于批量打patch;生成的patch文件直接拿到其他分支上执行即可
++ git apply <patchname> / git am <patchname>  
++ git diff  
++ git bisec    
++ git rebase -i HEAD~5    
++ git cat-file   
++ git log /git reflog  
++ downstream及upstream具体代表什么  
+
+### 附
+一个"块"(blob)即是文件的数据, 我们可以用cat-file查看其内容:
+
+$ git cat-file blob 3b18e512
+hello world
+
+http://gitbook.liuhui998.com/8_2.html

@@ -162,6 +162,7 @@ Provice.country
 #### 方法
 + 普通方法：由对象调用，至少一个self参数，执行普通方法时，自动将调用该方法的对象赋值给self
 + 类方法：由类调用，至少一个cls参数，执行类方法时，自动将调用该方法的类复制给cls
+被classmethod修饰的函数不需要实例化就可以直接调用，不需要self参数，传入cls参数
 + 静态方法：由类调用，无默认参数
 
 ```python
@@ -195,6 +196,21 @@ Foo.class_func()
 Foo.static_func()
 
 ```
+补充一个类方法的示例
+```
+In [9]: class A:
+   ...:     def __init__(self):
+   ...:         self.name="zk"
+   ...:     def get_name(self):
+   ...:         print(self.name)
+   ...:     @classmethod
+   ...:     def get_name_cls(cls):
+   ...:         cls().get_name()
+
+In [10]: A.get_name_cls()
+zk
+```
+
 
 ```python
 In [24]: class foo(object):
@@ -441,7 +457,3 @@ Function runtime is 0.0
 Function runtime is 0.0
 24
 ```
-
-
-
-[参考](http://www.cnblogs.com/wupeiqi/p/4766801.html)
