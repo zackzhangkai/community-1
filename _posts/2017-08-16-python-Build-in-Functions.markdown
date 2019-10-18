@@ -107,3 +107,5 @@ In [27]: for i,text in enumerate(iter):
 + chr()
 
 + ord()
+
+***关于 Python操作内存，del ***

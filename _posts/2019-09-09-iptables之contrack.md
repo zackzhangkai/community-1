@@ -12,7 +12,7 @@ tags: [iptables, netfilter]
 
 https://opengers.github.io/openstack/openstack-base-netfilter-framework-overview/
 
-https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#STATEMACHINE
+[https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#STATEMACHINE](https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#STATEMACHINE)
 
 https://zh.wikipedia.org/wiki/Netfilter
 利用运作于用户空间的应用软件，如iptables、ebtables和arptables等，来控制Netfilter，系统管理者可以管理通过Linux操作系统的各种网络数据包。现今许多市面上许多的IP分享器或无线网络路由器（Wireless router），多是嵌入式Linux平台，并利用Netfilter的数据包处理能力，提供NAT以及防火墙的功能。Netfilter平台中制定了五个数据包的挂载点（Hook），分别是PRE_ROUTING、INPUT、OUTPUT、FORWARD与POST_ROUTING。
