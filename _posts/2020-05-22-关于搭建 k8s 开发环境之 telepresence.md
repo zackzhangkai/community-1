@@ -212,12 +212,14 @@ httpd.serve_forever()
 
 那么就要部署一个新的服务让它监听到本地的流量。
 
-直接用 teletepresence让它接管本地的 8080 端口的数据：
+在 cluster 集群中用一个新的 Deployment，用 teletepresence让它接管本地的 8080 端口的数据：
 
 ```
 localhost$ telepresence --new-deployment hello-world2 --expose 8080
 
 ```
+
+如果是直接替换 cluster 上面本来就有的 Deployment 就用 swapdeployment。
 
 然后在本地把这个 web 跑起来：
 
