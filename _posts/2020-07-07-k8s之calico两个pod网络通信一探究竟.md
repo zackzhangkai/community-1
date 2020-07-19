@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title:  K8s两个pod网络通信一探究竟
+title:  k8s之calico两个pod网络通信一探究竟
 categories: [ k8s ]
 tags: [ 网络 ]
 ---
@@ -10,8 +10,9 @@ tags: [ 网络 ]
 
 
 
-# 两个pod相ping，以cordns的pod为例
+# 通信过程
 
+两个pod相ping，以cordns的pod为例
 ```
 [root@node1 ~]# kubectl -n kube-system get po -o wide|grep coredns
 coredns-79c6f6447f-6f9xp                       1/1     Running   0          44h   10.233.74.65   node4   <none>           <none>
