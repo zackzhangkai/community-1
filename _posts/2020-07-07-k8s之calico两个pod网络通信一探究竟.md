@@ -242,3 +242,45 @@ listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 
 
 参考网易刘超的文章 [calico](https://time.geekbang.org/column/article/11940)
+
+# 附：
+其实ipip是可以抓到内层包的：
+```
+[root@master1 logtest]# tcpdump -i eth0 proto 0x04
+06:46:16.719212 IP (tos 0x0, ttl 64, id 16045, offset 0, flags [DF], proto IPIP (4), length 80)
+    192.168.11.154 > 192.168.11.201: IP (tos 0x0, ttl 64, id 3404, offset 0, flags [DF], proto TCP (6), length 60)
+    10.233.118.3.36878 > 10.233.98.28.53: Flags [S], cksum 0xf936 (correct), seq 617938112, win 43690, options [mss 65495,sackOK,TS val 2165957
+84 ecr 0,nop,wscale 7], length 0
+```
+看这个包，内层IP和外层IP。
+
+为什么是 proto 0x04?
+
+因为IPIP对应的这个字段是16进制，因些要加0x04。可以通过抓所有包，然后grep过滤`IPIP`,可以看到IPIP的包后面的括号是有个4,然后就知道是这个值。
+
+关于包的详解，及每个字段表示的意思，[参考](https://www.cnblogs.com/ggjucheng/archive/2012/02/02/2335495.html)
+
+在抓包的时候如果开了网卡 offload 时，经常看到有checksum的值是incorrect，但是返回包又是正常的，原因是tcpdump是在数据包被发送给网卡之前捕捉数据包的，此时它不会看到正确的checksum，因为此时尚未进行计算（因为checksum已经卸载到网卡，此时这个checksum字段会被填写为0）只有经过网卡后，checksum才会被正确设置。这也就导致了抓包工具提示checksum错误的原因。 [参考](https://huataihuang.gitbooks.io/cloud-atlas/network/packet_analysis/tcpdump/udp_tcp_checksum_errors_from_tcpdump_nic_hardware_offloading.html)
+
+关闭checksum offload
+
+```
+ethtool -K ethX rx off tx off  #这其实是临时生效的方法，持久化需要在网卡的配置文件中/etc/sysconfig/ethxxx
+```
+为什么需要这个东西？
+
+如果关闭这个功能，当一个大包来的时候，会由操作系统执行分片处理，消耗系统资源；开启后，大包进来后，由网卡执行卸载，节省系统资源。
+
+tcpdump抓到的包，如何看这个包是否是分片的？
+
+```
+07:28:35.650067 IP (tos 0x10, ttl 64, id 9908, offset 0, flags [DF], proto TCP (6), length 2848)
+    192.168.11.201.22 > 171.113.240.2.25935: Flags [.], cksum 0x72f8 (incorrect -> 0x146d), seq 283258:286054, ack 217, win 45, options [nop,nop,TS val 146281809 ecr 824068609], length 2796
+```
+如这个包中，flags [DF]  就是未分片。[MF]是分片，注意是小写`flags`。包后面还有个Flags，这个是tcp的Header中的，它是三次握手四次握手中的东西 ` S S.  .  P`，分别表示`seq 、seq+ack 、ack 、（建立连接）push http包`
+
+如何看重传的包？
+
+```
+tcpdump -n -v 'tcp[tcpflags] & (tcp-rst) != 0'
+```
