@@ -1,13 +1,15 @@
 ---
 layout: post
 published: true
-title:  k8s之特殊的几个service
+title:  一次service LoadBalancer改错导致的灵异事件
 categories: [ k8s ]
-tags: []
+tags: [troubleshooting]
 ---
 * content
 {:toc}
 
+
+# 问题产生背景
 
 动机：我想给ks-apiserver 这个service 改成LoadBalancer的，然后我这样做的：
 
@@ -42,6 +44,8 @@ The connection to the server lb.kubesphere.local:6443 was refused - did you spec
 ```
 
 what's wrong????  （一脸黑线，此处应有黑人一脸懵逼的表情。。）
+
+# 分析与排查
 
 冷静下下来分析下，这个命令本质上是调kube-apiserver，只有两种可能，要么是IP不通，要么是端口有问题。
 
@@ -167,6 +171,8 @@ tcpdump -i any arp and host 192.168.11.250  -nn
 
 直接去node2上看 ip a | grep 192.168.11.250看下，发现果然。。。
 
+# 总结：
+
 好了，总结下：因为刚才在修改ks-apiserver的service类型为LoadBalancer时，添加了exterternalIPs中有 192.168.11.250，因此，会在所有的主机的kube-ipvs0这个网卡加上它的IP。由于是ipvs的，所有的serviceIP都是能直接Ping通的。因此，curl/nc发请求时，并没有走到Lb上，而是走到了随机的一个节点上，当这个请求到了master上就会通，到了worker就不通。这就是为什么时通时不通的原因。
 
 kubectl 不能用的原因也可以解释了，因为 kubeconfig文件中请求是指向LB的IP地址的。
@@ -179,7 +185,7 @@ kubectl 不能用的原因也可以解释了，因为 kubeconfig文件中请求�
 
 好了，不纠结了，正确的设置 LoadBalancer service 需要注意的是：这个externalIPs设置中的IP不能跟 kubeconfig中设置的lb地址冲突，否则有问题。
 
-附上一个LoadBalancer svc的完整yaml: 
+# 附一个正确LoadBalancer svc的完整yaml: 
 
 ```bash
 [root@master1 ~]# kubectl -n kubesphere-system get svc ks-apiserver -oyaml
