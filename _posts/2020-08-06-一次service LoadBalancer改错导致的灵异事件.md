@@ -106,7 +106,6 @@ tcpdump -i any host 192.168.11.250 port 6443 -w master1.pcap
 终止抓包，把包拷到本地，用wireshark分析：
 
 ```bash
-
 scp -P 30012 root@kk1:/root/master1.pcap /tmp
 open /Applications/Wireshark.app /tmp/master1.pcap
 ```
@@ -162,7 +161,7 @@ ip n|grep 192.168.11.250 # 发现有一个mac地址
 tcpdump -i any arp and host 192.168.11.250  -nn
 ```
 
-![](/styles/images/troubleshooting4.png)
+![](/styles/images/troubleshooting5.png)
 
 此时真相大白了，这个Ip有很多mac，说明这个ip确实重复了。
 
