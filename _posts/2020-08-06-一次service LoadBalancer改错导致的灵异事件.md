@@ -78,7 +78,7 @@ curl 下这个接口
 
 `ssh 192.168.11.250` 发现会随机在集群中选择一个主机
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce9f65b5-28f3-4899-9285-92cc883f8a79/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce9f65b5-28f3-4899-9285-92cc883f8a79/Untitled.png)
+![/styles/images/troubleshooting01.png)
 
 这里就有点意思了。更加不理解了，此时有一万个冲动，把集群重装，觉得集群出了问题，修不好了，太奇怪了，完全不理解了。不过我相信，一切问题皆是有原因的，没有无缘无故的问题。
 
@@ -114,11 +114,11 @@ open /Applications/Wireshark.app /tmp/master1.pcap
 
 在wireshark上过滤下包，wireshark的语法，直接点击输入框右边的下三角，有很多示例，找一个套下就出来了。
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/525140c6-a851-42f9-9a20-5a90c90b5c91/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/525140c6-a851-42f9-9a20-5a90c90b5c91/Untitled.png)
+![troubleshooting2.png](/styles/images/troubleshooting2.png)
 
 看到客户端发起一个包后，服务端直接RST了。
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96accc19-97ee-45d0-9bcd-ed98d43fad2f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96accc19-97ee-45d0-9bcd-ed98d43fad2f/Untitled.png)
+![](/styles/images/troubleshooting3.png)
 
 上网查了下，RST的原因是服务端这个端口不存在，直接拒绝。
 
@@ -141,7 +141,7 @@ open /Applications/Wireshark.app /tmp/master1.pcap
 
 先ssh lb的ip ,然后在master1上看下这个包的状态：
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8d6e9643-7dc0-4cfa-88cd-9d258476d524/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8d6e9643-7dc0-4cfa-88cd-9d258476d524/Untitled.png)
+![](/styles/images/troubleshooting4.png))
 
 看到包确实有连接。
 
@@ -163,7 +163,7 @@ ip n|grep 192.168.11.250 # 发现有一个mac地址
 tcpdump -i any arp and host 192.168.11.250  -nn
 ```
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d0c678bb-e9e0-49ac-b6e4-376bae2ce2c2/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d0c678bb-e9e0-49ac-b6e4-376bae2ce2c2/Untitled.png)
+![](/styles/images/troubleshooting4.png)
 
 此时真相大白了，这个Ip有很多mac，说明这个ip确实重复了。
 
