@@ -1,6 +1,6 @@
 ---
 layout: post
-published: true
+published: false
 title:  k8s之调试神器kubectl-debug
 categories: [ k8s ]
 tags: [troubleshooting]
