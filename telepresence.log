@@ -1,0 +1,1207 @@
+   0.0 TEL | Telepresence 0.105 launched at Fri Dec 11 11:40:19 2020
+   0.0 TEL |   /usr/local/bin/telepresence
+   0.0 TEL | uname: uname_result(system='Darwin', node='zack', release='19.6.0', version='Darwin Kernel Version 19.6.0: Mon Aug 31 22:12:52 PDT 2020; root:xnu-6153.141.2~1/RELEASE_X86_64', machine='x86_64')
+   0.0 TEL | Platform: darwin
+   0.0 TEL | WSL: False
+   0.0 TEL | Python 3.9.0 (default, Oct 27 2020, 14:15:17)
+   0.0 TEL | [Clang 12.0.0 (clang-1200.0.32.21)]
+   0.0 TEL | BEGIN SPAN main.py:40(main)
+   0.0 TEL | BEGIN SPAN startup.py:83(set_kube_command)
+   0.0 TEL | Found kubectl -> /usr/local/bin/kubectl
+   0.0 TEL | [1] Capturing: kubectl config current-context
+   0.1 TEL | [1] captured in 0.06 secs.
+   0.1 TEL | [2] Capturing: kubectl --context kubernetes-admin@cluster.local version --short
+   0.4 TEL | [2] captured in 0.31 secs.
+   0.4 TEL | [3] Capturing: kubectl --context kubernetes-admin@cluster.local config view -o json
+   0.5 TEL | [3] captured in 0.05 secs.
+   0.5 TEL | [4] Capturing: kubectl --context kubernetes-admin@cluster.local get ns kubesphere-system
+   0.7 TEL | [4] captured in 0.24 secs.
+   0.7 TEL | [5] Capturing: kubectl --context kubernetes-admin@cluster.local api-versions
+   1.1 TEL | [5] captured in 0.40 secs.
+   1.1 TEL | Command: kubectl 1.19.4
+   1.1 TEL | Context: kubernetes-admin@cluster.local, namespace: kubesphere-system, version: 1.17.9
+   1.1 TEL | Warning: kubectl 1.19.4 may not work correctly with cluster version 1.17.9 due to the version discrepancy. See https://kubernetes.io/docs/setup/version-skew-policy/ for more information.
+   1.1 TEL | END SPAN startup.py:83(set_kube_command)    1.1s
+   1.1 TEL | Found ssh -> /usr/bin/ssh
+   1.1 TEL | [6] Capturing: ssh -V
+   1.1 TEL | [6] captured in 0.01 secs.
+   1.1 TEL | Found bash -> /bin/bash
+   1.1 TEL | Found sshuttle-telepresence -> /usr/local/Cellar/telepresence/0.105/libexec/sshuttle-telepresence
+   1.1 TEL | Found pfctl -> /sbin/pfctl
+   1.1 TEL | Found sudo -> /usr/bin/sudo
+   1.1 TEL | [7] Running: sudo -n echo -n
+   1.1 TEL | [7] ran in 0.04 secs.
+   1.1 >>> | Starting proxy with method 'vpn-tcp', which has the following limitations: All processes are affected, only one telepresence can run per machine, and you can't use other VPNs. You may need to add cloud hosts and headless services with --also-proxy. For a full list of method limitations see https://telepresence.io/reference/methods.html
+   1.2 TEL | Found sshfs -> /usr/local/bin/sshfs
+   1.2 TEL | Found umount -> /sbin/umount
+   1.2 >>> | Volumes are rooted at $TELEPRESENCE_ROOT. See https://telepresence.io/howto/volumes.html for details.
+   1.2 TEL | [8] Running: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pods telepresence-connectivity-check --ignore-not-found
+   1.5 TEL | [8] ran in 0.34 secs.
+   5.3 TEL | Scout info: {'latest_version': '0.108', 'application': 'telepresence', 'notices': []}
+   5.3 TEL | BEGIN SPAN deployment.py:182(create_new_deployment)
+   5.3 >>> | Starting network proxy to cluster using new Deployment telepresence-1607658019-53387-59147
+   5.3 TEL | [9] Running: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system delete --ignore-not-found svc,deploy --selector=telepresence=c9fe9ee9227849cc8e79a2834937ae1e
+   5.6   9 | No resources found
+   5.6 TEL | [9] ran in 0.33 secs.
+   5.6 TEL | [10] Running: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system create -f -
+   6.5  10 | deployment.apps/telepresence-1607658019-53387-59147 created
+   6.5 TEL | [10] ran in 0.89 secs.
+   6.5 TEL | END SPAN deployment.py:182(create_new_deployment)    1.2s
+   6.5 TEL | BEGIN SPAN remote.py:142(get_remote_info)
+   6.5 TEL | BEGIN SPAN remote.py:75(get_deployment_json)
+   6.5 TEL | [11] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get deployment -o json --selector=telepresence=c9fe9ee9227849cc8e79a2834937ae1e
+   6.8 TEL | [11] captured in 0.26 secs.
+   6.8 TEL | END SPAN remote.py:75(get_deployment_json)    0.3s
+   6.8 TEL | Searching for Telepresence pod:
+   6.8 TEL |   with name telepresence-1607658019-53387-59147-*
+   6.8 TEL |   with labels {'telepresence': 'c9fe9ee9227849cc8e79a2834937ae1e'}
+   6.8 TEL | [12] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod -o json --selector=telepresence=c9fe9ee9227849cc8e79a2834937ae1e
+   7.0 TEL | [12] captured in 0.26 secs.
+   7.0 TEL | Checking telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5
+   7.0 TEL | Looks like we've found our pod!
+   7.0 TEL | BEGIN SPAN remote.py:104(wait_for_pod)
+   7.0 TEL | [13] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 -o json
+   7.3 TEL | [13] captured in 0.27 secs.
+   7.6 TEL | [14] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 -o json
+   7.8 TEL | [14] captured in 0.24 secs.
+   8.0 TEL | [15] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 -o json
+   8.3 TEL | [15] captured in 0.25 secs.
+   8.5 TEL | [16] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 -o json
+   8.8 TEL | [16] captured in 0.25 secs.
+   9.0 TEL | [17] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 -o json
+   9.3 TEL | [17] captured in 0.25 secs.
+   9.5 TEL | [18] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system get pod telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 -o json
+   9.8 TEL | [18] captured in 0.30 secs.
+   9.8 TEL | END SPAN remote.py:104(wait_for_pod)    2.8s
+   9.8 TEL | END SPAN remote.py:142(get_remote_info)    3.3s
+   9.8 TEL | BEGIN SPAN connect.py:37(connect)
+   9.8 TEL | [19] Launching kubectl logs: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system logs -f telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 --container telepresence-1607658019-53387-59147 --tail=10
+   9.8 TEL | [20] Launching kubectl port-forward: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system port-forward telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 53728:8022
+   9.8 TEL | [21] Running: ssh -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -q -p 53728 telepresence@127.0.0.1 /bin/true
+   9.9 TEL | [21] exit 255 in 0.01 secs.
+  10.1 TEL | [22] Running: ssh -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -q -p 53728 telepresence@127.0.0.1 /bin/true
+  10.1 TEL | [22] exit 255 in 0.01 secs.
+  10.2  19 | 2020-12-11T03:40:33+0000 [-] Loading ./forwarder.py...
+  10.2  19 | 2020-12-11T03:40:34+0000 [-] /etc/resolv.conf changed, reparsing
+  10.2  19 | 2020-12-11T03:40:34+0000 [-] Resolver added ('169.254.25.10', 53) to server list
+  10.2  19 | 2020-12-11T03:40:34+0000 [-] SOCKSv5Factory starting on 9050
+  10.2  19 | 2020-12-11T03:40:34+0000 [socks.SOCKSv5Factory#info] Starting factory <socks.SOCKSv5Factory object at 0x7fc3e80fffd0>
+  10.2  19 | 2020-12-11T03:40:34+0000 [-] DNSDatagramProtocol starting on 9053
+  10.2  19 | 2020-12-11T03:40:34+0000 [-] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e81062b0>
+  10.2  19 | 2020-12-11T03:40:34+0000 [-] Loaded.
+  10.2  19 | 2020-12-11T03:40:34+0000 [twisted.scripts._twistd_unix.UnixAppLogger#info] twistd 20.3.0 (/usr/bin/python3.6 3.6.8) starting up.
+  10.2  19 | 2020-12-11T03:40:34+0000 [twisted.scripts._twistd_unix.UnixAppLogger#info] reactor class: twisted.internet.epollreactor.EPollReactor.
+  10.4 TEL | [23] Running: ssh -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -q -p 53728 telepresence@127.0.0.1 /bin/true
+  10.4 TEL | [23] exit 255 in 0.01 secs.
+  10.4  20 | Forwarding from 127.0.0.1:53728 -> 8022
+  10.4  20 | Forwarding from [::1]:53728 -> 8022
+  10.6 TEL | [24] Running: ssh -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -q -p 53728 telepresence@127.0.0.1 /bin/true
+  10.6  20 | Handling connection for 53728
+  11.1 TEL | [24] ran in 0.48 secs.
+  11.1 >>> | 
+  11.1 >>> | No traffic is being forwarded from the remote Deployment to your local machine. You can use the --expose option to specify which ports you want to forward.
+  11.1 >>> | 
+  11.1 TEL | Launching Web server for proxy poll
+  11.1 TEL | [25] Launching SSH port forward (socks and proxy poll): ssh -N -oServerAliveInterval=1 -oServerAliveCountMax=10 -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -q -p 53728 telepresence@127.0.0.1 -L127.0.0.1:53743:127.0.0.1:9050 -R9055:127.0.0.1:53744
+  11.1 TEL | END SPAN connect.py:37(connect)    1.3s
+  11.1 TEL | BEGIN SPAN remote_env.py:29(get_remote_env)
+  11.1 TEL | [26] Capturing: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system exec telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 --container telepresence-1607658019-53387-59147 -- python3 podinfo.py
+  11.1  20 | Handling connection for 53728
+  12.0 TEL | [26] captured in 0.88 secs.
+  12.0 TEL | END SPAN remote_env.py:29(get_remote_env)    0.9s
+  12.0 TEL | BEGIN SPAN mount.py:30(mount_remote_volumes)
+  12.0 TEL | [27] Running: sshfs -p 53728 -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null telepresence@127.0.0.1:/ /tmp/tel-5_ikehs5/fs
+  12.1  20 | Handling connection for 53728
+  12.7 TEL | [27] ran in 0.74 secs.
+  12.7 TEL | END SPAN mount.py:30(mount_remote_volumes)    0.7s
+  12.7 TEL | BEGIN SPAN vpn.py:280(connect_sshuttle)
+  12.7 TEL | BEGIN SPAN vpn.py:77(get_proxy_cidrs)
+  12.7 TEL | END SPAN vpn.py:77(get_proxy_cidrs)    0.0s
+  12.7 TEL | [28] Launching sshuttle: sshuttle-telepresence -v --dns --method auto -e 'ssh -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null' -r telepresence@127.0.0.1:53728 --to-ns 127.0.0.1:9053 10.233.64.0/24 10.233.0.0/18
+  12.8 TEL | BEGIN SPAN vpn.py:303(connect_sshuttle,sshuttle-wait)
+  12.8 TEL | Wait for vpn-tcp connection: hellotelepresence-0
+  12.8 TEL | [29] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-0")'
+  12.9 TEL | [29] exit 1 in 0.12 secs.
+  12.9 TEL | [30] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-0.a.sanity.check.telepresence.io")'
+  13.6  28 | Starting sshuttle proxy.
+  13.9 TEL | [30] timed out after 1.01 secs.
+  14.0 TEL | Wait for vpn-tcp connection: hellotelepresence-1
+  14.0 TEL | [31] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-1")'
+  15.1  28 | firewall manager: Starting firewall with Python version 3.9.0
+  15.1  28 | firewall manager: ready method name pf.
+  15.1  28 | IPv6 enabled: True
+  15.1  28 | UDP enabled: False
+  15.1  28 | DNS enabled: True
+  15.1  28 | TCP redirector listening on ('::1', 12300, 0, 0).
+  15.1  28 | TCP redirector listening on ('127.0.0.1', 12300).
+  15.1  28 | DNS listening on ('::1', 12300, 0, 0).
+  15.1  28 | DNS listening on ('127.0.0.1', 12300).
+  15.1  28 | Starting client with Python version 3.9.0
+  15.1  28 | c : connecting to server...
+  15.1  20 | Handling connection for 53728
+  15.6 TEL | [31] exit 1 in 1.65 secs.
+  15.6 TEL | [32] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-1.a.sanity.check.telepresence.io")'
+  16.1  28 | Warning: Permanently added '[127.0.0.1]:53728' (ECDSA) to the list of known hosts.
+  16.3 TEL | [32] exit 1 in 0.68 secs.
+  16.4 TEL | Wait for vpn-tcp connection: hellotelepresence-2
+  16.4 TEL | [33] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-2")'
+  16.6 TEL | [33] exit 1 in 0.12 secs.
+  16.6 TEL | [34] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-2.a.sanity.check.telepresence.io")'
+  16.6 TEL | [34] exit 1 in 0.07 secs.
+  16.6  28 | Starting server with Python version 3.6.8
+  16.6  28 |  s: latency control setting = True
+  16.6  28 |  s: available routes:
+  16.6  28 | c : Connected.
+  16.6  28 | firewall manager: setting up.
+  16.6  28 | >> pfctl -s Interfaces -i lo -v
+  16.7  28 | >> pfctl -s all
+  16.7  28 | >> pfctl -a sshuttle6-12300 -f /dev/stdin
+  16.7  28 | >> pfctl -E
+  16.7  28 | >> pfctl -s Interfaces -i lo -v
+  16.7  28 | >> pfctl -s all
+  16.7  28 | >> pfctl -a sshuttle-12300 -f /dev/stdin
+  16.7  28 | >> pfctl -E
+  16.7 TEL | Wait for vpn-tcp connection: hellotelepresence-3
+  16.7 TEL | [35] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-3")'
+  16.8  28 | c : DNS request from ('172.31.140.84', 61636) to None: 45 bytes
+  16.8  19 | 2020-12-11T03:40:41+0000 [stdout#info] Set DNS suffix we filter out to: [(b'openvpn',)]
+  16.8  19 | 2020-12-11T03:40:41+0000 [stdout#info] Result for b'hellotelepresence-3.openvpn' is ['127.0.0.1']
+  16.9 TEL | [35] captured in 0.12 secs.
+  16.9 TEL | Resolved hellotelepresence-3. 2 more...
+  16.9 TEL | [36] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-3.a.sanity.check.telepresence.io")'
+  16.9  28 | c : DNS request from ('172.31.140.84', 64568) to None: 68 bytes
+  16.9  19 | 2020-12-11T03:40:41+0000 [stdout#info] Sanity check: b'hellotelepresence-3.a.sanity.check.telepresence.io'
+  17.0 TEL | [36] exit 1 in 0.12 secs.
+  17.1 TEL | Wait for vpn-tcp connection: hellotelepresence-4
+  17.1 TEL | [37] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-4")'
+  17.1  28 | c : DNS request from ('172.31.140.84', 58281) to None: 45 bytes
+  17.2  19 | 2020-12-11T03:40:41+0000 [stdout#info] Result for b'hellotelepresence-4.openvpn' is ['127.0.0.1']
+  17.2 TEL | [37] captured in 0.13 secs.
+  17.2 TEL | Resolved hellotelepresence-4. 1 more...
+  17.2 TEL | [38] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-4.a.sanity.check.telepresence.io")'
+  17.3  28 | c : DNS request from ('172.31.140.84', 59782) to None: 68 bytes
+  17.3  19 | 2020-12-11T03:40:41+0000 [stdout#info] Sanity check: b'hellotelepresence-4.a.sanity.check.telepresence.io'
+  17.3 TEL | [38] exit 1 in 0.13 secs.
+  17.4 TEL | Wait for vpn-tcp connection: hellotelepresence-5
+  17.4 TEL | [39] Capturing: python3 -c 'import socket; socket.gethostbyname("hellotelepresence-5")'
+  17.5  28 | c : DNS request from ('172.31.140.84', 52764) to None: 45 bytes
+  17.5  19 | 2020-12-11T03:40:41+0000 [stdout#info] Result for b'hellotelepresence-5.openvpn' is ['127.0.0.1']
+  17.6 TEL | [39] captured in 0.12 secs.
+  17.6 TEL | Resolved hellotelepresence-5. 0 more...
+  17.6 TEL | END SPAN vpn.py:303(connect_sshuttle,sshuttle-wait)    4.8s
+  17.6 TEL | END SPAN vpn.py:280(connect_sshuttle)    4.8s
+  17.6 >>> | Connected. Flushing DNS cache.
+  17.6 TEL | [40] Running: sudo -n /usr/bin/pkill -HUP mDNSResponder
+  17.6  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+  17.6  28 | c : DNS request from ('172.31.140.84', 62600) to None: 57 bytes
+  17.6  28 | c : DNS request from ('172.31.140.84', 58642) to None: 62 bytes
+  17.6  28 | c : DNS request from ('172.31.140.84', 62653) to None: 41 bytes
+  17.6 TEL | [40] ran in 0.07 secs.
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.0.140.31.172.in-addr.arpa'
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 41619
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8106a20>
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] (UDP Port 41619 Closed)
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8106a20>
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.6.1.255.10.in-addr.arpa'
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 32549
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8106da0>
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.106.196.168.192.in-addr.arpa'
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 58533
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8106940>
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] Updated query of type 12 from b'lb._dns-sd._udp.openvpn' to b'lb._dns-sd._udp'
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] 12 query: b'lb._dns-sd._udp'
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 44753
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8124160>
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] Failed to lookup b'lb._dns-sd._udp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=25613 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'lb._dns-sd._udp', 12, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+  17.7  19 | 2020-12-11T03:40:41+0000 [stdout#info] ], falling back to b'lb._dns-sd._udp.openvpn'
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 29444
+  17.7  19 | 2020-12-11T03:40:41+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e81244a8>
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] (UDP Port 44753 Closed)
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8124160>
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] (UDP Port 58533 Closed)
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8106940>
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] (UDP Port 32549 Closed)
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e8106da0>
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] (UDP Port 29444 Closed)
+  17.7  19 | 2020-12-11T03:40:41+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e81244a8>
+  18.1  28 | c : DNS request from ('172.31.140.84', 54233) to None: 44 bytes
+  18.1  19 | 2020-12-11T03:40:42+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+  18.1  19 | 2020-12-11T03:40:42+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+  18.1  19 | 2020-12-11T03:40:42+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+  19.3 >>> | Setup complete. Launching your command.
+  19.3 TEL | Everything launched. Waiting to exit...
+  19.3 TEL | BEGIN SPAN runner.py:726(wait_for_exit)
+  31.2 TEL | [41] Running: sudo -n echo -n
+  31.2 TEL | [41] ran in 0.04 secs.
+  40.0 TEL | (proxy checking local liveness)
+  40.1  19 | 2020-12-11T03:41:04+0000 [Poll#info] Checkpoint
+  61.3 TEL | [42] Running: sudo -n echo -n
+  61.4 TEL | [42] ran in 0.06 secs.
+  69.9 TEL | (proxy checking local liveness)
+  70.0  19 | 2020-12-11T03:41:34+0000 [Poll#info] Checkpoint
+  81.0  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+  81.0  28 | c : DNS request from ('172.31.140.84', 62600) to None: 57 bytes
+  81.0  28 | c : DNS request from ('172.31.140.84', 58642) to None: 62 bytes
+  81.0  28 | c : DNS request from ('172.31.140.84', 62653) to None: 41 bytes
+  81.0  19 | 2020-12-11T03:41:45+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.0.140.31.172.in-addr.arpa'
+  81.0  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 37618
+  81.0  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e816fac8>
+  81.1  19 | 2020-12-11T03:41:45+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.6.1.255.10.in-addr.arpa'
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 27645
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e816fb38>
+  81.1  19 | 2020-12-11T03:41:45+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.106.196.168.192.in-addr.arpa'
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 48904
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e816fd30>
+  81.1  19 | 2020-12-11T03:41:45+0000 [stdout#info] Updated query of type 12 from b'lb._dns-sd._udp.openvpn' to b'lb._dns-sd._udp'
+  81.1  19 | 2020-12-11T03:41:45+0000 [stdout#info] 12 query: b'lb._dns-sd._udp'
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 14083
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7080>
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] (UDP Port 37618 Closed)
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e816fac8>
+  81.1  19 | 2020-12-11T03:41:45+0000 [stdout#info] Failed to lookup b'lb._dns-sd._udp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=6298 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'lb._dns-sd._udp', 12, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+  81.1  19 | 2020-12-11T03:41:45+0000 [stdout#info] ], falling back to b'lb._dns-sd._udp.openvpn'
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 16152
+  81.1  19 | 2020-12-11T03:41:45+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7240>
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] (UDP Port 14083 Closed)
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7080>
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] (UDP Port 27645 Closed)
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e816fb38>
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] (UDP Port 48904 Closed)
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e816fd30>
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] (UDP Port 16152 Closed)
+  81.1  19 | 2020-12-11T03:41:45+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7240>
+  91.1  28 | c : DNS request from ('172.31.140.84', 62497) to None: 28 bytes
+  91.2  19 | 2020-12-11T03:41:55+0000 [stdout#info] A query: b'github.com'
+  91.2  19 | 2020-12-11T03:41:55+0000 [stdout#info] Result for b'github.com' is ['192.30.255.113']
+  91.4 TEL | [43] Running: sudo -n echo -n
+  91.5 TEL | [43] ran in 0.03 secs.
+  96.1  28 | c : DNS request from ('172.31.140.84', 49422) to None: 44 bytes
+  96.1  19 | 2020-12-11T03:42:00+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+  96.1  19 | 2020-12-11T03:42:00+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+  96.1  19 | 2020-12-11T03:42:00+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+  99.9 TEL | (proxy checking local liveness)
+ 100.0  19 | 2020-12-11T03:42:04+0000 [Poll#info] Checkpoint
+ 107.2  28 | c : DNS request from ('172.31.140.84', 38271) to None: 47 bytes
+ 107.2  19 | 2020-12-11T03:42:11+0000 [stdout#info] A query: b'clientservices.googleapis.com'
+ 107.2  19 | 2020-12-11T03:42:11+0000 [stdout#info] Result for b'clientservices.googleapis.com' is ['203.208.41.34']
+ 112.5  28 | c : DNS request from ('172.31.140.84', 57265) to None: 31 bytes
+ 112.5  28 | c : DNS request from ('172.31.140.84', 58343) to None: 31 bytes
+ 112.5  19 | 2020-12-11T03:42:16+0000 [stdout#info] A query: b'music.163.com'
+ 112.5  19 | 2020-12-11T03:42:16+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 112.5  19 | 2020-12-11T03:42:16+0000 [stdout#info] A query: b'music.163.com'
+ 112.5  19 | 2020-12-11T03:42:16+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+ 112.5  19 | 2020-12-11T03:42:16+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+ 121.6 TEL | [44] Running: sudo -n echo -n
+ 121.6 TEL | [44] ran in 0.02 secs.
+ 125.7  28 | c : DNS request from ('172.31.140.84', 42639) to None: 33 bytes
+ 125.8  19 | 2020-12-11T03:42:30+0000 [stdout#info] A query: b'ssl.gstatic.com'
+ 125.8  19 | 2020-12-11T03:42:30+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['172.217.161.131']
+ 129.9 TEL | (proxy checking local liveness)
+ 130.0  19 | 2020-12-11T03:42:34+0000 [Poll#info] Checkpoint
+ 141.3  28 | c : DNS request from ('172.31.140.84', 50985) to None: 38 bytes
+ 141.4  19 | 2020-12-11T03:42:45+0000 [stdout#info] A query: b'time-macos.apple.com'
+ 141.4  19 | 2020-12-11T03:42:45+0000 [stdout#info] Result for b'time-macos.apple.com' is ['17.253.68.251', '17.253.68.253', '17.253.84.253', '17.253.84.123', '17.253.84.251']
+ 151.7 TEL | [45] Running: sudo -n echo -n
+ 151.7 TEL | [45] ran in 0.03 secs.
+ 159.9 TEL | (proxy checking local liveness)
+ 160.0  19 | 2020-12-11T03:43:04+0000 [Poll#info] Checkpoint
+ 174.1  28 | c : DNS request from ('172.31.140.84', 57343) to None: 44 bytes
+ 174.1  19 | 2020-12-11T03:43:18+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 174.1  19 | 2020-12-11T03:43:18+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 174.1  19 | 2020-12-11T03:43:18+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 176.3  28 | c : DNS request from ('172.31.140.84', 49848) to None: 41 bytes
+ 176.4  19 | 2020-12-11T03:43:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+ 176.4  19 | 2020-12-11T03:43:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['118.191.216.42', '118.191.216.57', '119.28.109.132']
+ 181.8 TEL | [46] Running: sudo -n echo -n
+ 181.8 TEL | [46] ran in 0.03 secs.
+ 189.9 TEL | (proxy checking local liveness)
+ 190.0  19 | 2020-12-11T03:43:34+0000 [Poll#info] Checkpoint
+ 211.9 TEL | [47] Running: sudo -n echo -n
+ 211.9 TEL | [47] ran in 0.03 secs.
+ 220.0 TEL | (proxy checking local liveness)
+ 220.0  19 | 2020-12-11T03:44:04+0000 [Poll#info] Checkpoint
+ 242.0 TEL | [48] Running: sudo -n echo -n
+ 242.0 TEL | [48] ran in 0.03 secs.
+ 242.2  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+ 242.2  28 | c : DNS request from ('172.31.140.84', 62600) to None: 57 bytes
+ 242.2  28 | c : DNS request from ('172.31.140.84', 58642) to None: 62 bytes
+ 242.2  28 | c : DNS request from ('172.31.140.84', 62653) to None: 41 bytes
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.0.140.31.172.in-addr.arpa'
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 7075
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ba8>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.6.1.255.10.in-addr.arpa'
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 22327
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf048>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.106.196.168.192.in-addr.arpa'
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 44979
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf240>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] Updated query of type 12 from b'lb._dns-sd._udp.openvpn' to b'lb._dns-sd._udp'
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] 12 query: b'lb._dns-sd._udp'
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 62991
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf550>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] Failed to lookup b'lb._dns-sd._udp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=59287 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'lb._dns-sd._udp', 12, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [stdout#info] ], falling back to b'lb._dns-sd._udp.openvpn'
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 21988
+ 242.3  19 | 2020-12-11T03:44:26+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf898>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] (UDP Port 62991 Closed)
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf550>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] (UDP Port 22327 Closed)
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf048>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] (UDP Port 7075 Closed)
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ba8>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] (UDP Port 44979 Closed)
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf240>
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] (UDP Port 21988 Closed)
+ 242.3  19 | 2020-12-11T03:44:26+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80bf898>
+ 243.0  28 | c : DNS request from ('172.31.140.84', 53362) to None: 31 bytes
+ 243.0  28 | c : DNS request from ('172.31.140.84', 57645) to None: 31 bytes
+ 243.1  19 | 2020-12-11T03:44:27+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 243.1  19 | 2020-12-11T03:44:27+0000 [stdout#info] A query: b'music.163.com'
+ 243.1  19 | 2020-12-11T03:44:27+0000 [stdout#info] A query: b'music.163.com'
+ 243.1  19 | 2020-12-11T03:44:27+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 243.1  19 | 2020-12-11T03:44:27+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 249.9 TEL | (proxy checking local liveness)
+ 250.0  19 | 2020-12-11T03:44:34+0000 [Poll#info] Checkpoint
+ 252.1  28 | c : DNS request from ('172.31.140.84', 57257) to None: 44 bytes
+ 252.1  19 | 2020-12-11T03:44:36+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 252.1  19 | 2020-12-11T03:44:36+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 252.1  19 | 2020-12-11T03:44:36+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 272.1 TEL | [49] Running: sudo -n echo -n
+ 272.1 TEL | [49] ran in 0.03 secs.
+ 279.9 TEL | (proxy checking local liveness)
+ 280.0  19 | 2020-12-11T03:45:04+0000 [Poll#info] Checkpoint
+ 302.2 TEL | [50] Running: sudo -n echo -n
+ 302.2 TEL | [50] ran in 0.03 secs.
+ 310.0 TEL | (proxy checking local liveness)
+ 310.0  19 | 2020-12-11T03:45:34+0000 [Poll#info] Checkpoint
+ 330.1  28 | c : DNS request from ('172.31.140.84', 50343) to None: 44 bytes
+ 330.1  19 | 2020-12-11T03:45:54+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 330.1  19 | 2020-12-11T03:45:54+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 330.1  19 | 2020-12-11T03:45:54+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 332.3 TEL | [51] Running: sudo -n echo -n
+ 332.3 TEL | [51] ran in 0.03 secs.
+ 339.9 TEL | (proxy checking local liveness)
+ 340.0  19 | 2020-12-11T03:46:04+0000 [Poll#info] Checkpoint
+ 362.4 TEL | [52] Running: sudo -n echo -n
+ 362.4 TEL | [52] ran in 0.02 secs.
+ 370.0 TEL | (proxy checking local liveness)
+ 370.0  19 | 2020-12-11T03:46:34+0000 [Poll#info] Checkpoint
+ 374.0  28 | c : DNS request from ('172.31.140.84', 57693) to None: 31 bytes
+ 374.0  28 | c : DNS request from ('172.31.140.84', 55729) to None: 31 bytes
+ 375.0  19 | 2020-12-11T03:46:38+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 375.0  19 | 2020-12-11T03:46:38+0000 [stdout#info] A query: b'music.163.com'
+ 375.0  19 | 2020-12-11T03:46:38+0000 [stdout#info] A query: b'music.163.com'
+ 375.0  19 | 2020-12-11T03:46:38+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 375.0  19 | 2020-12-11T03:46:38+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 378.3  28 | c : DNS request from ('172.31.140.84', 50305) to None: 37 bytes
+ 378.4  19 | 2020-12-11T03:46:42+0000 [stdout#info] AAAA query, sending back A instead: b'lb.kubesphere.local'
+ 378.4  19 | 2020-12-11T03:46:42+0000 [stdout#info] A query: b'lb.kubesphere.local'
+ 378.4  19 | 2020-12-11T03:46:42+0000 [stdout#info] Result for b'lb.kubesphere.local' is ['192.168.0.2']
+ 388.2  28 | c : DNS request from ('172.31.140.84', 53149) to None: 36 bytes
+ 388.2  28 | c : DNS request from ('172.31.140.84', 52181) to None: 36 bytes
+ 388.3  19 | 2020-12-11T03:46:52+0000 [stdout#info] A query: b'kiali.istio-system'
+ 388.3  19 | 2020-12-11T03:46:52+0000 [stdout#info] AAAA query, sending back A instead: b'kiali.istio-system'
+ 388.3  19 | 2020-12-11T03:46:52+0000 [stdout#info] A query: b'kiali.istio-system'
+ 388.3  28 | c : Accept TCP: 172.31.140.84:54597 -> 10.233.46.35:20001.
+ 388.3  19 | 2020-12-11T03:46:52+0000 [stdout#info] Result for b'kiali.istio-system' is ['10.233.46.35']
+ 388.3  19 | 2020-12-11T03:46:52+0000 [stdout#info] Result for b'kiali.istio-system' is ['10.233.46.35']
+ 392.5 TEL | [53] Running: sudo -n echo -n
+ 392.5 TEL | [53] ran in 0.03 secs.
+ 399.9 TEL | (proxy checking local liveness)
+ 400.0  19 | 2020-12-11T03:47:04+0000 [Poll#info] Checkpoint
+ 408.1  28 | c : DNS request from ('172.31.140.84', 54290) to None: 44 bytes
+ 408.1  19 | 2020-12-11T03:47:12+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 408.1  19 | 2020-12-11T03:47:12+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 408.1  19 | 2020-12-11T03:47:12+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 422.6 TEL | [54] Running: sudo -n echo -n
+ 422.6 TEL | [54] ran in 0.03 secs.
+ 425.7  28 | c : DNS request from ('172.31.140.84', 27180) to None: 33 bytes
+ 425.8  19 | 2020-12-11T03:47:29+0000 [stdout#info] A query: b'ssl.gstatic.com'
+ 425.8  19 | 2020-12-11T03:47:30+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+ 429.9 TEL | (proxy checking local liveness)
+ 430.0  19 | 2020-12-11T03:47:34+0000 [Poll#info] Checkpoint
+ 452.7 TEL | [55] Running: sudo -n echo -n
+ 452.7 TEL | [55] ran in 0.03 secs.
+ 459.9 TEL | (proxy checking local liveness)
+ 460.0  19 | 2020-12-11T03:48:04+0000 [Poll#info] Checkpoint
+ 476.3  28 | c : DNS request from ('172.31.140.84', 50876) to None: 41 bytes
+ 476.4  19 | 2020-12-11T03:48:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+ 476.4  19 | 2020-12-11T03:48:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['118.191.216.57', '119.28.109.132', '118.191.216.42']
+ 482.8 TEL | [56] Running: sudo -n echo -n
+ 482.9 TEL | [56] ran in 0.03 secs.
+ 486.1  28 | c : DNS request from ('172.31.140.84', 61248) to None: 44 bytes
+ 486.1  19 | 2020-12-11T03:48:30+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 486.1  19 | 2020-12-11T03:48:30+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 486.1  19 | 2020-12-11T03:48:30+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 489.9 TEL | (proxy checking local liveness)
+ 490.0  19 | 2020-12-11T03:48:34+0000 [Poll#info] Checkpoint
+ 497.4  28 | c : DNS request from ('172.31.140.84', 53156) to None: 31 bytes
+ 497.4  28 | c : DNS request from ('172.31.140.84', 62448) to None: 31 bytes
+ 497.4  19 | 2020-12-11T03:48:41+0000 [stdout#info] A query: b'music.163.com'
+ 497.4  19 | 2020-12-11T03:48:41+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 497.4  19 | 2020-12-11T03:48:41+0000 [stdout#info] A query: b'music.163.com'
+ 497.5  19 | 2020-12-11T03:48:41+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 497.5  19 | 2020-12-11T03:48:41+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 513.0 TEL | [57] Running: sudo -n echo -n
+ 513.0 TEL | [57] ran in 0.03 secs.
+ 519.9 TEL | (proxy checking local liveness)
+ 520.0  19 | 2020-12-11T03:49:04+0000 [Poll#info] Checkpoint
+ 528.4  28 | c : DNS request from ('172.31.140.84', 59004) to None: 35 bytes
+ 528.4  19 | 2020-12-11T03:49:12+0000 [stdout#info] A query: b'wdl1.cache.wps.cn'
+ 528.4  19 | 2020-12-11T03:49:12+0000 [stdout#info] Result for b'wdl1.cache.wps.cn' is ['119.96.205.213', '119.96.205.214']
+ 529.4  28 | c : DNS request from ('172.31.140.84', 49177) to None: 35 bytes
+ 529.4  19 | 2020-12-11T03:49:13+0000 [stdout#info] A query: b'qingcenter.wps.cn'
+ 529.4  19 | 2020-12-11T03:49:13+0000 [stdout#info] Result for b'qingcenter.wps.cn' is ['239.11.20.1']
+ 541.7  28 | c : DNS request from ('172.31.140.84', 63579) to None: 29 bytes
+ 541.7  19 | 2020-12-11T03:49:25+0000 [stdout#info] A query: b'pcfg.wps.cn'
+ 541.7  19 | 2020-12-11T03:49:25+0000 [stdout#info] Result for b'pcfg.wps.cn' is ['120.92.84.225', '120.92.84.16']
+ 543.1 TEL | [58] Running: sudo -n echo -n
+ 543.1 TEL | [58] ran in 0.03 secs.
+ 550.0 TEL | (proxy checking local liveness)
+ 550.0  19 | 2020-12-11T03:49:34+0000 [Poll#info] Checkpoint
+ 564.1  28 | c : DNS request from ('172.31.140.84', 49904) to None: 44 bytes
+ 564.1  19 | 2020-12-11T03:49:48+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 564.1  19 | 2020-12-11T03:49:48+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 564.1  19 | 2020-12-11T03:49:48+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 571.8  28 | c : DNS request from ('172.31.140.84', 64115) to None: 28 bytes
+ 571.8  19 | 2020-12-11T03:49:56+0000 [stdout#info] A query: b'github.com'
+ 571.8  19 | 2020-12-11T03:49:56+0000 [stdout#info] Result for b'github.com' is ['192.30.255.113']
+ 573.1 TEL | [59] Running: sudo -n echo -n
+ 573.2 TEL | [59] ran in 0.03 secs.
+ 579.9 TEL | (proxy checking local liveness)
+ 580.0  19 | 2020-12-11T03:50:04+0000 [Poll#info] Checkpoint
+ 598.2  28 | c : DNS request from ('172.31.140.84', 61199) to None: 28 bytes
+ 598.3  19 | 2020-12-11T03:50:22+0000 [stdout#info] A query: b'github.com'
+ 598.3  19 | 2020-12-11T03:50:22+0000 [stdout#info] Result for b'github.com' is ['192.30.255.113']
+ 603.3 TEL | [60] Running: sudo -n echo -n
+ 603.3 TEL | [60] ran in 0.04 secs.
+ 609.9 TEL | (proxy checking local liveness)
+ 610.0  19 | 2020-12-11T03:50:34+0000 [Poll#info] Checkpoint
+ 618.0  28 | c : DNS request from ('172.31.140.84', 53845) to None: 31 bytes
+ 618.0  28 | c : DNS request from ('172.31.140.84', 52461) to None: 31 bytes
+ 618.1  19 | 2020-12-11T03:50:42+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 618.1  19 | 2020-12-11T03:50:42+0000 [stdout#info] A query: b'music.163.com'
+ 618.1  19 | 2020-12-11T03:50:42+0000 [stdout#info] A query: b'music.163.com'
+ 618.1  19 | 2020-12-11T03:50:42+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 618.1  19 | 2020-12-11T03:50:42+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 633.4 TEL | [61] Running: sudo -n echo -n
+ 633.4 TEL | [61] ran in 0.03 secs.
+ 639.9 TEL | (proxy checking local liveness)
+ 640.0  19 | 2020-12-11T03:51:04+0000 [Poll#info] Checkpoint
+ 642.1  28 | c : DNS request from ('172.31.140.84', 51348) to None: 44 bytes
+ 642.1  19 | 2020-12-11T03:51:06+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 642.1  19 | 2020-12-11T03:51:06+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 642.1  19 | 2020-12-11T03:51:06+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 643.7  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+ 643.7  28 | c : DNS request from ('172.31.140.84', 62600) to None: 57 bytes
+ 643.7  28 | c : DNS request from ('172.31.140.84', 58642) to None: 62 bytes
+ 643.7  28 | c : DNS request from ('172.31.140.84', 62653) to None: 41 bytes
+ 643.7  19 | 2020-12-11T03:51:07+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.0.140.31.172.in-addr.arpa'
+ 643.7  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 59353
+ 643.7  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b76a0>
+ 643.7  19 | 2020-12-11T03:51:07+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.6.1.255.10.in-addr.arpa'
+ 643.7  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 40288
+ 643.7  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7b00>
+ 643.7  19 | 2020-12-11T03:51:07+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.106.196.168.192.in-addr.arpa'
+ 643.7  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 11382
+ 643.7  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7780>
+ 643.7  19 | 2020-12-11T03:51:07+0000 [stdout#info] Updated query of type 12 from b'lb._dns-sd._udp.openvpn' to b'lb._dns-sd._udp'
+ 643.8  19 | 2020-12-11T03:51:07+0000 [stdout#info] 12 query: b'lb._dns-sd._udp'
+ 643.8  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 17905
+ 643.8  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7588>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] (UDP Port 59353 Closed)
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b76a0>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] (UDP Port 11382 Closed)
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7780>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [stdout#info] Failed to lookup b'lb._dns-sd._udp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=39468 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'lb._dns-sd._udp', 12, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [stdout#info] ], falling back to b'lb._dns-sd._udp.openvpn'
+ 643.8  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 36643
+ 643.8  19 | 2020-12-11T03:51:07+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ef0>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] (UDP Port 40288 Closed)
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7b00>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] (UDP Port 17905 Closed)
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7588>
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] (UDP Port 36643 Closed)
+ 643.8  19 | 2020-12-11T03:51:07+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ef0>
+ 663.5 TEL | [62] Running: sudo -n echo -n
+ 663.5 TEL | [62] ran in 0.03 secs.
+ 670.1 TEL | (proxy checking local liveness)
+ 670.2  19 | 2020-12-11T03:51:34+0000 [Poll#info] Checkpoint
+ 693.6 TEL | [63] Running: sudo -n echo -n
+ 693.6 TEL | [63] ran in 0.03 secs.
+ 699.9 TEL | (proxy checking local liveness)
+ 700.0  19 | 2020-12-11T03:52:04+0000 [Poll#info] Checkpoint
+ 719.2  28 | c : DNS request from ('172.31.140.84', 31952) to None: 35 bytes
+ 719.3  19 | 2020-12-11T03:52:23+0000 [stdout#info] A query: b'fonts.gstatic.com'
+ 719.3  19 | 2020-12-11T03:52:23+0000 [stdout#info] Result for b'fonts.gstatic.com' is ['203.208.40.66']
+ 720.1  28 | c : DNS request from ('172.31.140.84', 62657) to None: 44 bytes
+ 720.1  19 | 2020-12-11T03:52:24+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 720.1  19 | 2020-12-11T03:52:24+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 720.1  19 | 2020-12-11T03:52:24+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 723.7 TEL | [64] Running: sudo -n echo -n
+ 723.7 TEL | [64] ran in 0.04 secs.
+ 725.7  28 | c : DNS request from ('172.31.140.84', 36180) to None: 33 bytes
+ 725.8  19 | 2020-12-11T03:52:29+0000 [stdout#info] A query: b'ssl.gstatic.com'
+ 725.8  19 | 2020-12-11T03:52:29+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+ 730.0 TEL | (proxy checking local liveness)
+ 730.0  19 | 2020-12-11T03:52:34+0000 [Poll#info] Checkpoint
+ 741.0  28 | c : DNS request from ('172.31.140.84', 60583) to None: 31 bytes
+ 741.0  28 | c : DNS request from ('172.31.140.84', 50820) to None: 31 bytes
+ 741.1  19 | 2020-12-11T03:52:45+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 741.1  19 | 2020-12-11T03:52:45+0000 [stdout#info] A query: b'music.163.com'
+ 741.1  19 | 2020-12-11T03:52:45+0000 [stdout#info] A query: b'music.163.com'
+ 741.1  19 | 2020-12-11T03:52:45+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+ 741.1  19 | 2020-12-11T03:52:45+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+ 753.8 TEL | [65] Running: sudo -n echo -n
+ 753.8 TEL | [65] ran in 0.04 secs.
+ 760.0 TEL | (proxy checking local liveness)
+ 760.0  19 | 2020-12-11T03:53:04+0000 [Poll#info] Checkpoint
+ 776.5  28 | c : DNS request from ('172.31.140.84', 51535) to None: 41 bytes
+ 776.6  19 | 2020-12-11T03:53:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+ 776.6  19 | 2020-12-11T03:53:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['49.51.65.181']
+ 781.4  28 | c : DNS request from ('172.31.140.84', 60049) to None: 37 bytes
+ 781.4  19 | 2020-12-11T03:53:25+0000 [stdout#info] A query: b'g.static.mega.co.nz'
+ 781.4  19 | 2020-12-11T03:53:25+0000 [stdout#info] Result for b'g.static.mega.co.nz' is ['66.203.127.13', '66.203.127.11', '66.203.124.37', '89.44.169.132', '89.44.169.134']
+ 783.9 TEL | [66] Running: sudo -n echo -n
+ 783.9 TEL | [66] ran in 0.03 secs.
+ 789.9 TEL | (proxy checking local liveness)
+ 790.0  19 | 2020-12-11T03:53:34+0000 [Poll#info] Checkpoint
+ 798.1  28 | c : DNS request from ('172.31.140.84', 62290) to None: 44 bytes
+ 798.1  19 | 2020-12-11T03:53:42+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 798.1  19 | 2020-12-11T03:53:42+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 798.1  19 | 2020-12-11T03:53:42+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 814.0 TEL | [67] Running: sudo -n echo -n
+ 814.0 TEL | [67] ran in 0.03 secs.
+ 819.9 TEL | (proxy checking local liveness)
+ 820.0  19 | 2020-12-11T03:54:04+0000 [Poll#info] Checkpoint
+ 844.1 TEL | [68] Running: sudo -n echo -n
+ 844.1 TEL | [68] ran in 0.03 secs.
+ 849.9 TEL | (proxy checking local liveness)
+ 850.0  19 | 2020-12-11T03:54:34+0000 [Poll#info] Checkpoint
+ 865.8  28 | c : DNS request from ('172.31.140.84', 64318) to None: 31 bytes
+ 865.8  28 | c : DNS request from ('172.31.140.84', 64630) to None: 31 bytes
+ 865.9  19 | 2020-12-11T03:54:50+0000 [stdout#info] A query: b'music.163.com'
+ 865.9  19 | 2020-12-11T03:54:50+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 865.9  19 | 2020-12-11T03:54:50+0000 [stdout#info] A query: b'music.163.com'
+ 865.9  19 | 2020-12-11T03:54:50+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+ 865.9  19 | 2020-12-11T03:54:50+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+ 874.1 TEL | [69] Running: sudo -n echo -n
+ 874.2 TEL | [69] ran in 0.03 secs.
+ 876.1  28 | c : DNS request from ('172.31.140.84', 57316) to None: 44 bytes
+ 876.1  19 | 2020-12-11T03:55:00+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 876.1  19 | 2020-12-11T03:55:00+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 876.1  19 | 2020-12-11T03:55:00+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 880.0 TEL | (proxy checking local liveness)
+ 880.1  19 | 2020-12-11T03:55:04+0000 [Poll#info] Checkpoint
+ 904.3 TEL | [70] Running: sudo -n echo -n
+ 904.3 TEL | [70] ran in 0.03 secs.
+ 910.0 TEL | (proxy checking local liveness)
+ 910.1  19 | 2020-12-11T03:55:34+0000 [Poll#info] Checkpoint
+ 934.3 TEL | [71] Running: sudo -n echo -n
+ 934.4 TEL | [71] ran in 0.03 secs.
+ 939.9 TEL | (proxy checking local liveness)
+ 940.0  19 | 2020-12-11T03:56:04+0000 [Poll#info] Checkpoint
+ 954.1  28 | c : DNS request from ('172.31.140.84', 53968) to None: 44 bytes
+ 954.1  19 | 2020-12-11T03:56:18+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+ 954.1  19 | 2020-12-11T03:56:18+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+ 954.1  19 | 2020-12-11T03:56:18+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+ 964.4 TEL | [72] Running: sudo -n echo -n
+ 964.5 TEL | [72] ran in 0.04 secs.
+ 969.9 TEL | (proxy checking local liveness)
+ 970.0  19 | 2020-12-11T03:56:34+0000 [Poll#info] Checkpoint
+ 993.2  28 | c : DNS request from ('172.31.140.84', 57118) to None: 31 bytes
+ 993.2  28 | c : DNS request from ('172.31.140.84', 59570) to None: 31 bytes
+ 993.3  19 | 2020-12-11T03:56:57+0000 [stdout#info] A query: b'music.163.com'
+ 993.3  19 | 2020-12-11T03:56:57+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+ 993.3  19 | 2020-12-11T03:56:57+0000 [stdout#info] A query: b'music.163.com'
+ 993.4  19 | 2020-12-11T03:56:57+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 993.4  19 | 2020-12-11T03:56:57+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+ 994.5 TEL | [73] Running: sudo -n echo -n
+ 994.5 TEL | [73] ran in 0.03 secs.
+ 999.9 TEL | (proxy checking local liveness)
+1000.0  19 | 2020-12-11T03:57:04+0000 [Poll#info] Checkpoint
+1002.8  28 | c : DNS request from ('172.31.140.84', 62021) to None: 28 bytes
+1002.8  19 | 2020-12-11T03:57:07+0000 [stdout#info] A query: b'github.com'
+1002.8  19 | 2020-12-11T03:57:07+0000 [stdout#info] Result for b'github.com' is ['192.30.255.112']
+1024.6 TEL | [74] Running: sudo -n echo -n
+1024.6 TEL | [74] ran in 0.03 secs.
+1025.7  28 | c : DNS request from ('172.31.140.84', 35824) to None: 33 bytes
+1025.7  19 | 2020-12-11T03:57:29+0000 [stdout#info] A query: b'ssl.gstatic.com'
+1025.8  19 | 2020-12-11T03:57:29+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+1030.0 TEL | (proxy checking local liveness)
+1030.2  19 | 2020-12-11T03:57:34+0000 [Poll#info] Checkpoint
+1032.1  28 | c : DNS request from ('172.31.140.84', 53742) to None: 44 bytes
+1032.2  19 | 2020-12-11T03:57:36+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1032.2  19 | 2020-12-11T03:57:36+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1032.2  19 | 2020-12-11T03:57:36+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1054.7 TEL | [75] Running: sudo -n echo -n
+1054.7 TEL | [75] ran in 0.03 secs.
+1059.9 TEL | (proxy checking local liveness)
+1060.0  19 | 2020-12-11T03:58:04+0000 [Poll#info] Checkpoint
+1076.3  28 | c : DNS request from ('172.31.140.84', 52314) to None: 41 bytes
+1076.4  19 | 2020-12-11T03:58:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+1076.4  19 | 2020-12-11T03:58:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['119.28.109.132', '118.191.216.57', '118.191.216.42']
+1084.8 TEL | [76] Running: sudo -n echo -n
+1084.9 TEL | [76] ran in 0.03 secs.
+1089.9 TEL | (proxy checking local liveness)
+1090.0  19 | 2020-12-11T03:58:34+0000 [Poll#info] Checkpoint
+1110.1  28 | c : DNS request from ('172.31.140.84', 59084) to None: 44 bytes
+1110.1  19 | 2020-12-11T03:58:54+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1110.1  19 | 2020-12-11T03:58:54+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1110.1  19 | 2020-12-11T03:58:54+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1114.9 TEL | [77] Running: sudo -n echo -n
+1115.0 TEL | [77] ran in 0.04 secs.
+1115.0  28 | c : DNS request from ('172.31.140.84', 60873) to None: 31 bytes
+1115.0  28 | c : DNS request from ('172.31.140.84', 58256) to None: 31 bytes
+1115.1  19 | 2020-12-11T03:58:59+0000 [stdout#info] A query: b'music.163.com'
+1115.1  19 | 2020-12-11T03:58:59+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1115.1  19 | 2020-12-11T03:58:59+0000 [stdout#info] A query: b'music.163.com'
+1115.1  19 | 2020-12-11T03:58:59+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1115.1  19 | 2020-12-11T03:58:59+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1119.9 TEL | (proxy checking local liveness)
+1120.0  19 | 2020-12-11T03:59:04+0000 [Poll#info] Checkpoint
+1145.0 TEL | [78] Running: sudo -n echo -n
+1145.1 TEL | [78] ran in 0.04 secs.
+1149.9 TEL | (proxy checking local liveness)
+1150.0  19 | 2020-12-11T03:59:34+0000 [Poll#info] Checkpoint
+1175.1 TEL | [79] Running: sudo -n echo -n
+1175.2 TEL | [79] ran in 0.03 secs.
+1180.0 TEL | (proxy checking local liveness)
+1180.1  19 | 2020-12-11T04:00:04+0000 [Poll#info] Checkpoint
+1188.1  28 | c : DNS request from ('172.31.140.84', 65347) to None: 44 bytes
+1188.1  19 | 2020-12-11T04:00:12+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1188.1  19 | 2020-12-11T04:00:12+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1188.1  19 | 2020-12-11T04:00:12+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1205.2 TEL | [80] Running: sudo -n echo -n
+1205.3 TEL | [80] ran in 0.03 secs.
+1209.9 TEL | (proxy checking local liveness)
+1210.0  19 | 2020-12-11T04:00:34+0000 [Poll#info] Checkpoint
+1235.3 TEL | [81] Running: sudo -n echo -n
+1235.4 TEL | [81] ran in 0.03 secs.
+1236.1  28 | c : DNS request from ('172.31.140.84', 55605) to None: 31 bytes
+1236.1  28 | c : DNS request from ('172.31.140.84', 50211) to None: 31 bytes
+1236.1  19 | 2020-12-11T04:01:00+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1236.1  19 | 2020-12-11T04:01:00+0000 [stdout#info] A query: b'music.163.com'
+1236.1  19 | 2020-12-11T04:01:00+0000 [stdout#info] A query: b'music.163.com'
+1236.1  19 | 2020-12-11T04:01:00+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1236.1  19 | 2020-12-11T04:01:00+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1239.9 TEL | (proxy checking local liveness)
+1240.0  19 | 2020-12-11T04:01:04+0000 [Poll#info] Checkpoint
+1265.4 TEL | [82] Running: sudo -n echo -n
+1265.5 TEL | [82] ran in 0.03 secs.
+1266.1  28 | c : DNS request from ('172.31.140.84', 50556) to None: 44 bytes
+1266.1  19 | 2020-12-11T04:01:30+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1266.1  19 | 2020-12-11T04:01:30+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1266.1  19 | 2020-12-11T04:01:30+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1269.9 TEL | (proxy checking local liveness)
+1270.0  19 | 2020-12-11T04:01:34+0000 [Poll#info] Checkpoint
+1295.5 TEL | [83] Running: sudo -n echo -n
+1295.6 TEL | [83] ran in 0.03 secs.
+1300.1 TEL | (proxy checking local liveness)
+1300.2  19 | 2020-12-11T04:02:04+0000 [Poll#info] Checkpoint
+1325.6 TEL | [84] Running: sudo -n echo -n
+1325.7 TEL | [84] ran in 0.05 secs.
+1325.7  28 | c : DNS request from ('172.31.140.84', 16344) to None: 33 bytes
+1325.8  19 | 2020-12-11T04:02:29+0000 [stdout#info] A query: b'ssl.gstatic.com'
+1325.8  19 | 2020-12-11T04:02:29+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+1329.9 TEL | (proxy checking local liveness)
+1330.0  19 | 2020-12-11T04:02:34+0000 [Poll#info] Checkpoint
+1344.1  28 | c : DNS request from ('172.31.140.84', 59095) to None: 44 bytes
+1344.1  19 | 2020-12-11T04:02:48+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1344.1  19 | 2020-12-11T04:02:48+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1344.1  19 | 2020-12-11T04:02:48+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1355.7 TEL | [85] Running: sudo -n echo -n
+1355.8 TEL | [85] ran in 0.03 secs.
+1358.0  28 | c : DNS request from ('172.31.140.84', 58089) to None: 31 bytes
+1358.0  28 | c : DNS request from ('172.31.140.84', 59698) to None: 31 bytes
+1358.1  19 | 2020-12-11T04:03:02+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1358.1  19 | 2020-12-11T04:03:02+0000 [stdout#info] A query: b'music.163.com'
+1358.1  19 | 2020-12-11T04:03:02+0000 [stdout#info] A query: b'music.163.com'
+1358.1  19 | 2020-12-11T04:03:02+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1358.1  19 | 2020-12-11T04:03:02+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1359.9 TEL | (proxy checking local liveness)
+1360.0  19 | 2020-12-11T04:03:04+0000 [Poll#info] Checkpoint
+1376.3  28 | c : DNS request from ('172.31.140.84', 58343) to None: 41 bytes
+1376.4  19 | 2020-12-11T04:03:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+1376.4  19 | 2020-12-11T04:03:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['118.191.216.57', '119.28.109.132', '118.191.216.42']
+1385.8 TEL | [86] Running: sudo -n echo -n
+1385.9 TEL | [86] ran in 0.03 secs.
+1389.9 TEL | (proxy checking local liveness)
+1389.9  19 | 2020-12-11T04:03:34+0000 [Poll#info] Checkpoint
+1396.4  28 | c : DNS request from ('172.31.140.84', 23958) to None: 35 bytes
+1396.5  19 | 2020-12-11T04:03:40+0000 [stdout#info] A query: b'fonts.gstatic.com'
+1396.5  19 | 2020-12-11T04:03:40+0000 [stdout#info] Result for b'fonts.gstatic.com' is ['203.208.40.66']
+1400.8  28 | c : DNS request from ('172.31.140.84', 61902) to None: 33 bytes
+1400.8  19 | 2020-12-11T04:03:45+0000 [stdout#info] A query: b'ssl.gstatic.com'
+1400.8  19 | 2020-12-11T04:03:45+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+1416.0 TEL | [87] Running: sudo -n echo -n
+1416.0 TEL | [87] ran in 0.04 secs.
+1419.8 TEL | (proxy checking local liveness)
+1419.9  19 | 2020-12-11T04:04:04+0000 [Poll#info] Checkpoint
+1422.1  28 | c : DNS request from ('172.31.140.84', 51895) to None: 44 bytes
+1422.1  19 | 2020-12-11T04:04:06+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1422.1  19 | 2020-12-11T04:04:06+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1422.2  19 | 2020-12-11T04:04:06+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1446.1 TEL | [88] Running: sudo -n echo -n
+1446.1 TEL | [88] ran in 0.03 secs.
+1449.8 TEL | (proxy checking local liveness)
+1449.9  19 | 2020-12-11T04:04:34+0000 [Poll#info] Checkpoint
+1464.9  28 | c : DNS request from ('172.31.140.84', 1374) to None: 45 bytes
+1465.0  19 | 2020-12-11T04:04:49+0000 [stdout#info] A query: b'safebrowsing.googleapis.com'
+1465.0  19 | 2020-12-11T04:04:49+0000 [stdout#info] Result for b'safebrowsing.googleapis.com' is ['216.58.197.106']
+1476.2 TEL | [89] Running: sudo -n echo -n
+1476.2 TEL | [89] ran in 0.03 secs.
+1479.9 TEL | (proxy checking local liveness)
+1480.0  19 | 2020-12-11T04:05:04+0000 [Poll#info] Checkpoint
+1482.0  28 | c : DNS request from ('172.31.140.84', 55307) to None: 31 bytes
+1482.0  28 | c : DNS request from ('172.31.140.84', 63167) to None: 31 bytes
+1482.1  19 | 2020-12-11T04:05:06+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1482.1  19 | 2020-12-11T04:05:06+0000 [stdout#info] A query: b'music.163.com'
+1482.1  19 | 2020-12-11T04:05:06+0000 [stdout#info] A query: b'music.163.com'
+1482.2  19 | 2020-12-11T04:05:06+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1482.2  19 | 2020-12-11T04:05:06+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1500.1  28 | c : DNS request from ('172.31.140.84', 65139) to None: 44 bytes
+1500.1  19 | 2020-12-11T04:05:24+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1500.1  19 | 2020-12-11T04:05:24+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1500.1  19 | 2020-12-11T04:05:24+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1506.3 TEL | [90] Running: sudo -n echo -n
+1506.3 TEL | [90] ran in 0.05 secs.
+1509.8 TEL | (proxy checking local liveness)
+1509.9  19 | 2020-12-11T04:05:34+0000 [Poll#info] Checkpoint
+1511.6  28 | c : DNS request from ('172.31.140.84', 52915) to None: 29 bytes
+1511.7  19 | 2020-12-11T04:05:35+0000 [stdout#info] A query: b'pcfg.wps.cn'
+1511.7  19 | 2020-12-11T04:05:35+0000 [stdout#info] Result for b'pcfg.wps.cn' is ['120.92.84.16', '120.92.84.225']
+1536.5 TEL | [91] Running: sudo -n echo -n
+1536.5 TEL | [91] ran in 0.03 secs.
+1539.9 TEL | (proxy checking local liveness)
+1539.9  19 | 2020-12-11T04:06:04+0000 [Poll#info] Checkpoint
+1566.6 TEL | [92] Running: sudo -n echo -n
+1566.6 TEL | [92] ran in 0.03 secs.
+1569.8 TEL | (proxy checking local liveness)
+1569.9  19 | 2020-12-11T04:06:34+0000 [Poll#info] Checkpoint
+1578.1  28 | c : DNS request from ('172.31.140.84', 54598) to None: 44 bytes
+1578.1  19 | 2020-12-11T04:06:42+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1578.1  19 | 2020-12-11T04:06:42+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1578.1  19 | 2020-12-11T04:06:42+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1596.7 TEL | [93] Running: sudo -n echo -n
+1596.7 TEL | [93] ran in 0.03 secs.
+1599.8 TEL | (proxy checking local liveness)
+1599.9  19 | 2020-12-11T04:07:04+0000 [Poll#info] Checkpoint
+1603.3  28 | c : DNS request from ('172.31.140.84', 59059) to None: 31 bytes
+1603.3  28 | c : DNS request from ('172.31.140.84', 57162) to None: 31 bytes
+1603.3  19 | 2020-12-11T04:07:07+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1603.3  19 | 2020-12-11T04:07:07+0000 [stdout#info] A query: b'music.163.com'
+1603.3  19 | 2020-12-11T04:07:07+0000 [stdout#info] A query: b'music.163.com'
+1603.3  19 | 2020-12-11T04:07:07+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1603.4  19 | 2020-12-11T04:07:07+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1625.7  28 | c : DNS request from ('172.31.140.84', 48279) to None: 33 bytes
+1625.8  19 | 2020-12-11T04:07:30+0000 [stdout#info] A query: b'ssl.gstatic.com'
+1625.8  19 | 2020-12-11T04:07:30+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+1626.8 TEL | [94] Running: sudo -n echo -n
+1626.8 TEL | [94] ran in 0.05 secs.
+1630.0 TEL | (proxy checking local liveness)
+1630.0  19 | 2020-12-11T04:07:34+0000 [Poll#info] Checkpoint
+1642.5  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+1642.5  28 | c : DNS request from ('172.31.140.84', 62600) to None: 57 bytes
+1642.5  28 | c : DNS request from ('172.31.140.84', 58642) to None: 62 bytes
+1642.5  28 | c : DNS request from ('172.31.140.84', 62653) to None: 41 bytes
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.0.140.31.172.in-addr.arpa'
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 47932
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d6d30>
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.6.1.255.10.in-addr.arpa'
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 32400
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d6cf8>
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] 12 query: b'lb._dns-sd._udp.106.196.168.192.in-addr.arpa'
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 44889
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d6ef0>
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] Updated query of type 12 from b'lb._dns-sd._udp.openvpn' to b'lb._dns-sd._udp'
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] 12 query: b'lb._dns-sd._udp'
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 3596
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b70b8>
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] (UDP Port 47932 Closed)
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d6d30>
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] (UDP Port 32400 Closed)
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d6cf8>
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] (UDP Port 44889 Closed)
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d6ef0>
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] Failed to lookup b'lb._dns-sd._udp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=21875 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'lb._dns-sd._udp', 12, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+1642.6  19 | 2020-12-11T04:07:46+0000 [stdout#info] ], falling back to b'lb._dns-sd._udp.openvpn'
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 20851
+1642.6  19 | 2020-12-11T04:07:46+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7668>
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] (UDP Port 3596 Closed)
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b70b8>
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] (UDP Port 20851 Closed)
+1642.6  19 | 2020-12-11T04:07:46+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7668>
+1656.1  28 | c : DNS request from ('172.31.140.84', 60967) to None: 44 bytes
+1656.2  19 | 2020-12-11T04:08:00+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1656.2  19 | 2020-12-11T04:08:00+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1656.2  19 | 2020-12-11T04:08:00+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1656.9 TEL | [95] Running: sudo -n echo -n
+1656.9 TEL | [95] ran in 0.05 secs.
+1659.8 TEL | (proxy checking local liveness)
+1659.9  19 | 2020-12-11T04:08:04+0000 [Poll#info] Checkpoint
+1676.3  28 | c : DNS request from ('172.31.140.84', 52161) to None: 41 bytes
+1676.4  19 | 2020-12-11T04:08:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+1676.4  19 | 2020-12-11T04:08:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['49.51.65.181']
+1687.0 TEL | [96] Running: sudo -n echo -n
+1687.1 TEL | [96] ran in 0.03 secs.
+1689.8 TEL | (proxy checking local liveness)
+1689.9  19 | 2020-12-11T04:08:34+0000 [Poll#info] Checkpoint
+1692.2  28 | c : DNS request from ('172.31.140.84', 53383) to None: 38 bytes
+1692.2  28 | c : DNS request from ('172.31.140.84', 64938) to None: 45 bytes
+1692.3  19 | 2020-12-11T04:08:36+0000 [stdout#info] A query: b'time-macos.apple.com'
+1692.3  19 | 2020-12-11T04:08:36+0000 [stdout#info] A query: b'safebrowsing.googleapis.com'
+1692.3  19 | 2020-12-11T04:08:36+0000 [stdout#info] Result for b'safebrowsing.googleapis.com' is ['216.58.197.106']
+1692.3  19 | 2020-12-11T04:08:36+0000 [stdout#info] Result for b'time-macos.apple.com' is ['17.253.68.253', '17.253.84.251', '17.253.68.251', '17.253.84.253', '17.253.84.123']
+1717.1 TEL | [97] Running: sudo -n echo -n
+1717.2 TEL | [97] ran in 0.06 secs.
+1719.9 TEL | (proxy checking local liveness)
+1720.0  19 | 2020-12-11T04:09:04+0000 [Poll#info] Checkpoint
+1724.8  28 | c : DNS request from ('172.31.140.84', 53687) to None: 41 bytes
+1724.8  28 | c : DNS request from ('172.31.140.84', 52426) to None: 41 bytes
+1724.8  19 | 2020-12-11T04:09:09+0000 [stdout#info] A query: b'fls.jetbrains-agent.com'
+1724.8  19 | 2020-12-11T04:09:09+0000 [stdout#info] AAAA query, sending back A instead: b'fls.jetbrains-agent.com'
+1724.8  19 | 2020-12-11T04:09:09+0000 [stdout#info] A query: b'fls.jetbrains-agent.com'
+1724.8  19 | 2020-12-11T04:09:09+0000 [stdout#info] Result for b'fls.jetbrains-agent.com' is ['172.67.142.173', '104.27.131.76', '104.27.130.76']
+1724.8  19 | 2020-12-11T04:09:09+0000 [stdout#info] Result for b'fls.jetbrains-agent.com' is ['172.67.142.173', '104.27.131.76', '104.27.130.76']
+1724.9  28 | c : DNS request from ('172.31.140.84', 60034) to None: 31 bytes
+1724.9  28 | c : DNS request from ('172.31.140.84', 51117) to None: 31 bytes
+1725.0  19 | 2020-12-11T04:09:09+0000 [stdout#info] A query: b'music.163.com'
+1725.0  19 | 2020-12-11T04:09:09+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1725.0  19 | 2020-12-11T04:09:09+0000 [stdout#info] A query: b'music.163.com'
+1725.0  19 | 2020-12-11T04:09:09+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1725.0  19 | 2020-12-11T04:09:09+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.132', '103.126.92.133']
+1734.1  28 | c : DNS request from ('172.31.140.84', 62221) to None: 44 bytes
+1734.1  19 | 2020-12-11T04:09:18+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1734.1  19 | 2020-12-11T04:09:18+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1734.1  19 | 2020-12-11T04:09:18+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1747.3 TEL | [98] Running: sudo -n echo -n
+1747.3 TEL | [98] ran in 0.03 secs.
+1749.9 TEL | (proxy checking local liveness)
+1750.0  19 | 2020-12-11T04:09:34+0000 [Poll#info] Checkpoint
+1763.1  28 | c : DNS request from ('172.31.140.84', 58424) to None: 43 bytes
+1763.1  19 | 2020-12-11T04:09:47+0000 [stdout#info] A query: b'vortex.data.microsoft.com'
+1763.1  19 | 2020-12-11T04:09:47+0000 [stdout#info] Result for b'vortex.data.microsoft.com' is ['111.221.29.254']
+1775.4  28 | c : DNS request from ('172.31.140.84', 57933) to None: 29 bytes
+1775.4  19 | 2020-12-11T04:09:59+0000 [stdout#info] A query: b'pcfg.wps.cn'
+1775.4  19 | 2020-12-11T04:09:59+0000 [stdout#info] Result for b'pcfg.wps.cn' is ['120.92.84.225', '120.92.84.16']
+1777.3 TEL | [99] Running: sudo -n echo -n
+1777.4 TEL | [99] ran in 0.03 secs.
+1779.8 TEL | (proxy checking local liveness)
+1779.9  19 | 2020-12-11T04:10:04+0000 [Poll#info] Checkpoint
+1804.9  28 | c : DNS request from ('172.31.140.84', 62846) to None: 28 bytes
+1804.9  19 | 2020-12-11T04:10:29+0000 [stdout#info] A query: b'github.com'
+1804.9  19 | 2020-12-11T04:10:29+0000 [stdout#info] Result for b'github.com' is ['192.30.255.112']
+1807.4 TEL | [100] Running: sudo -n echo -n
+1807.5 TEL | [100] ran in 0.03 secs.
+1809.9 TEL | (proxy checking local liveness)
+1810.0  19 | 2020-12-11T04:10:34+0000 [Poll#info] Checkpoint
+1812.1  28 | c : DNS request from ('172.31.140.84', 57166) to None: 44 bytes
+1812.1  19 | 2020-12-11T04:10:36+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1812.1  19 | 2020-12-11T04:10:36+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1812.1  19 | 2020-12-11T04:10:36+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1837.5 TEL | [101] Running: sudo -n echo -n
+1837.5 TEL | [101] ran in 0.02 secs.
+1839.9 TEL | (proxy checking local liveness)
+1840.0  19 | 2020-12-11T04:11:04+0000 [Poll#info] Checkpoint
+1845.0  28 | c : DNS request from ('172.31.140.84', 57952) to None: 31 bytes
+1845.0  28 | c : DNS request from ('172.31.140.84', 52784) to None: 31 bytes
+1845.1  19 | 2020-12-11T04:11:09+0000 [stdout#info] A query: b'music.163.com'
+1845.1  19 | 2020-12-11T04:11:09+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1845.1  19 | 2020-12-11T04:11:09+0000 [stdout#info] A query: b'music.163.com'
+1845.1  19 | 2020-12-11T04:11:09+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1845.1  19 | 2020-12-11T04:11:09+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1867.6 TEL | [102] Running: sudo -n echo -n
+1867.6 TEL | [102] ran in 0.02 secs.
+1869.8 TEL | (proxy checking local liveness)
+1869.9  19 | 2020-12-11T04:11:34+0000 [Poll#info] Checkpoint
+1890.1  28 | c : DNS request from ('172.31.140.84', 58251) to None: 44 bytes
+1890.1  19 | 2020-12-11T04:11:54+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1890.1  19 | 2020-12-11T04:11:54+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1890.1  19 | 2020-12-11T04:11:54+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1897.7 TEL | [103] Running: sudo -n echo -n
+1897.7 TEL | [103] ran in 0.03 secs.
+1899.8 TEL | (proxy checking local liveness)
+1899.9  19 | 2020-12-11T04:12:04+0000 [Poll#info] Checkpoint
+1907.2  28 | c : DNS request from ('172.31.140.84', 48429) to None: 47 bytes
+1907.2  19 | 2020-12-11T04:12:11+0000 [stdout#info] A query: b'clientservices.googleapis.com'
+1907.2  19 | 2020-12-11T04:12:11+0000 [stdout#info] Result for b'clientservices.googleapis.com' is ['203.208.41.34']
+1910.6  28 | c : DNS request from ('172.31.140.84', 50843) to None: 28 bytes
+1910.7  19 | 2020-12-11T04:12:15+0000 [stdout#info] A query: b'github.com'
+1910.7  19 | 2020-12-11T04:12:15+0000 [stdout#info] Result for b'github.com' is ['192.30.255.112']
+1925.8  28 | c : DNS request from ('172.31.140.84', 44775) to None: 33 bytes
+1925.9  19 | 2020-12-11T04:12:30+0000 [stdout#info] A query: b'ssl.gstatic.com'
+1925.9  19 | 2020-12-11T04:12:30+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+1927.8 TEL | [104] Running: sudo -n echo -n
+1927.9 TEL | [104] ran in 0.02 secs.
+1929.8 TEL | (proxy checking local liveness)
+1929.9  19 | 2020-12-11T04:12:34+0000 [Poll#info] Checkpoint
+1957.9 TEL | [105] Running: sudo -n echo -n
+1957.9 TEL | [105] ran in 0.03 secs.
+1959.8 TEL | (proxy checking local liveness)
+1959.9  19 | 2020-12-11T04:13:04+0000 [Poll#info] Checkpoint
+1965.3  28 | c : DNS request from ('172.31.140.84', 58086) to None: 34 bytes
+1965.4  19 | 2020-12-11T04:13:09+0000 [stdout#info] A query: b'tools.google.com'
+1965.4  19 | 2020-12-11T04:13:09+0000 [stdout#info] Result for b'tools.google.com' is ['203.208.41.98']
+1968.1  28 | c : DNS request from ('172.31.140.84', 56986) to None: 44 bytes
+1968.1  19 | 2020-12-11T04:13:12+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+1968.1  19 | 2020-12-11T04:13:12+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+1968.1  19 | 2020-12-11T04:13:12+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+1971.5  28 | c : DNS request from ('172.31.140.84', 50512) to None: 31 bytes
+1971.5  28 | c : DNS request from ('172.31.140.84', 63553) to None: 31 bytes
+1971.6  19 | 2020-12-11T04:13:15+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+1971.6  19 | 2020-12-11T04:13:15+0000 [stdout#info] A query: b'music.163.com'
+1971.6  19 | 2020-12-11T04:13:15+0000 [stdout#info] A query: b'music.163.com'
+1971.6  19 | 2020-12-11T04:13:15+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1971.6  19 | 2020-12-11T04:13:15+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+1975.0  28 | c : DNS request from ('172.31.140.84', 64194) to None: 35 bytes
+1975.0  19 | 2020-12-11T04:13:19+0000 [stdout#info] A query: b'dns.weixin.qq.com'
+1975.1  19 | 2020-12-11T04:13:19+0000 [stdout#info] Result for b'dns.weixin.qq.com' is ['49.51.89.155', '49.51.20.85']
+1976.3  28 | c : DNS request from ('172.31.140.84', 56502) to None: 41 bytes
+1976.4  19 | 2020-12-11T04:13:20+0000 [stdout#info] A query: b'config.pinyin.sogou.com'
+1976.4  19 | 2020-12-11T04:13:20+0000 [stdout#info] Result for b'config.pinyin.sogou.com' is ['118.191.216.42', '119.28.109.132', '118.191.216.57']
+1988.0 TEL | [106] Running: sudo -n echo -n
+1988.0 TEL | [106] ran in 0.03 secs.
+1989.8 TEL | (proxy checking local liveness)
+1989.9  19 | 2020-12-11T04:13:34+0000 [Poll#info] Checkpoint
+2018.1 TEL | [107] Running: sudo -n echo -n
+2018.1 TEL | [107] ran in 0.03 secs.
+2019.8 TEL | (proxy checking local liveness)
+2019.9  19 | 2020-12-11T04:14:04+0000 [Poll#info] Checkpoint
+2046.1  28 | c : DNS request from ('172.31.140.84', 61785) to None: 44 bytes
+2046.1  19 | 2020-12-11T04:14:30+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+2046.1  19 | 2020-12-11T04:14:30+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+2046.1  19 | 2020-12-11T04:14:30+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+2048.2 TEL | [108] Running: sudo -n echo -n
+2048.2 TEL | [108] ran in 0.03 secs.
+2049.8 TEL | (proxy checking local liveness)
+2049.9  19 | 2020-12-11T04:14:34+0000 [Poll#info] Checkpoint
+2078.3 TEL | [109] Running: sudo -n echo -n
+2078.3 TEL | [109] ran in 0.03 secs.
+2079.8 TEL | (proxy checking local liveness)
+2079.9  19 | 2020-12-11T04:15:04+0000 [Poll#info] Checkpoint
+2101.2  28 | c : DNS request from ('172.31.140.84', 52549) to None: 31 bytes
+2101.2  28 | c : DNS request from ('172.31.140.84', 65244) to None: 31 bytes
+2101.3  19 | 2020-12-11T04:15:25+0000 [stdout#info] A query: b'music.163.com'
+2101.3  19 | 2020-12-11T04:15:25+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+2101.3  19 | 2020-12-11T04:15:25+0000 [stdout#info] A query: b'music.163.com'
+2101.5  19 | 2020-12-11T04:15:25+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+2101.5  19 | 2020-12-11T04:15:25+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+2108.4 TEL | [110] Running: sudo -n echo -n
+2108.4 TEL | [110] ran in 0.03 secs.
+2109.9 TEL | (proxy checking local liveness)
+2109.9  19 | 2020-12-11T04:15:34+0000 [Poll#info] Checkpoint
+2124.1  28 | c : DNS request from ('172.31.140.84', 65501) to None: 44 bytes
+2124.1  19 | 2020-12-11T04:15:48+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+2124.1  19 | 2020-12-11T04:15:48+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+2124.1  19 | 2020-12-11T04:15:48+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+2138.5 TEL | [111] Running: sudo -n echo -n
+2138.5 TEL | [111] ran in 0.03 secs.
+2139.8 TEL | (proxy checking local liveness)
+2139.9  19 | 2020-12-11T04:16:04+0000 [Poll#info] Checkpoint
+2168.5 TEL | [112] Running: sudo -n echo -n
+2168.6 TEL | [112] ran in 0.03 secs.
+2169.8 TEL | (proxy checking local liveness)
+2169.9  19 | 2020-12-11T04:16:34+0000 [Poll#info] Checkpoint
+2176.0  28 | c : DNS request from ('172.31.140.84', 65262) to None: 41 bytes
+2176.0  28 | c : DNS request from ('172.31.140.84', 62031) to None: 42 bytes
+2176.0  28 | c : DNS request from ('172.31.140.84', 64648) to None: 42 bytes
+2176.0  28 | c : DNS request from ('172.31.140.84', 56077) to None: 42 bytes
+2176.0  28 | c : DNS request from ('172.31.140.84', 54543) to None: 42 bytes
+2176.0  19 | 2020-12-11T04:16:40+0000 [stdout#info] Updated query of type 16 from b'_aaplcache._tcp.openvpn' to b'_aaplcache._tcp'
+2176.0  19 | 2020-12-11T04:16:40+0000 [stdout#info] 16 query: b'_aaplcache._tcp'
+2176.0  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 29991
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7198>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Updated query of type 16 from b'_aaplcache1._tcp.openvpn' to b'_aaplcache1._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] 16 query: b'_aaplcache1._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 25295
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ef0>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Updated query of type 16 from b'_aaplcache3._tcp.openvpn' to b'_aaplcache3._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] 16 query: b'_aaplcache3._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 35128
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d0b70>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Updated query of type 16 from b'_aaplcache2._tcp.openvpn' to b'_aaplcache2._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] 16 query: b'_aaplcache2._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 11115
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d0588>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Updated query of type 16 from b'_aaplcache4._tcp.openvpn' to b'_aaplcache4._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] 16 query: b'_aaplcache4._tcp'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 11039
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c4e48>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Failed to lookup b'_aaplcache._tcp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=28346 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'_aaplcache._tcp', 16, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] ], falling back to b'_aaplcache._tcp.openvpn'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 28032
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c4780>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 29991 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7198>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Failed to lookup b'_aaplcache3._tcp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=20192 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'_aaplcache3._tcp', 16, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] ], falling back to b'_aaplcache3._tcp.openvpn'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 23910
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c4d68>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Failed to lookup b'_aaplcache1._tcp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=18569 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'_aaplcache1._tcp', 16, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] ], falling back to b'_aaplcache1._tcp.openvpn'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 12864
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c46a0>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 35128 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d0b70>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 25295 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ef0>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Failed to lookup b'_aaplcache2._tcp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=1947 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'_aaplcache2._tcp', 16, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] ], falling back to b'_aaplcache2._tcp.openvpn'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 30812
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7c50>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] Failed to lookup b'_aaplcache4._tcp' due to [Failure instance: Traceback (failure with no frames): <class 'twisted.names.error.DNSNameError'>: <Message id=55759 rCode=3 maxSize=0 flags=answer,recDes,recAv queries=[Query(b'_aaplcache4._tcp', 16, 1)] authority=[<RR name= type=SOA class=IN ttl=30s auth=False>]>
+2176.1  19 | 2020-12-11T04:16:40+0000 [stdout#info] ], falling back to b'_aaplcache4._tcp.openvpn'
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] DNSDatagramProtocol starting on 10367
+2176.1  19 | 2020-12-11T04:16:40+0000 [DNSDatagramProtocol (UDP)] Starting protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ba8>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 11115 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80d0588>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 28032 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c4780>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 11039 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c4e48>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 23910 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c4d68>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 12864 Closed)
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80c46a0>
+2176.1  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 30812 Closed)
+2176.2  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7c50>
+2176.2  19 | 2020-12-11T04:16:40+0000 [-] (UDP Port 10367 Closed)
+2176.2  19 | 2020-12-11T04:16:40+0000 [-] Stopping protocol <twisted.names.dns.DNSDatagramProtocol object at 0x7fc3e80b7ba8>
+2198.7 TEL | [113] Running: sudo -n echo -n
+2198.8 TEL | [113] ran in 0.04 secs.
+2199.8 TEL | (proxy checking local liveness)
+2199.9  19 | 2020-12-11T04:17:04+0000 [Poll#info] Checkpoint
+2202.1  28 | c : DNS request from ('172.31.140.84', 53122) to None: 44 bytes
+2202.1  19 | 2020-12-11T04:17:06+0000 [stdout#info] AAAA query, sending back A instead: b'kubernetes.docker.internal'
+2202.1  19 | 2020-12-11T04:17:06+0000 [stdout#info] A query: b'kubernetes.docker.internal'
+2202.1  19 | 2020-12-11T04:17:06+0000 [stdout#info] getaddrinfo error: [Errno -2] Name does not resolve
+2225.7  28 | c : DNS request from ('172.31.140.84', 15131) to None: 33 bytes
+2225.7  19 | 2020-12-11T04:17:30+0000 [stdout#info] A query: b'ssl.gstatic.com'
+2225.7  19 | 2020-12-11T04:17:30+0000 [stdout#info] Result for b'ssl.gstatic.com' is ['203.208.40.34']
+2228.3  28 | c : DNS request from ('172.31.140.84', 55048) to None: 38 bytes
+2228.4  19 | 2020-12-11T04:17:32+0000 [stdout#info] A query: b'bag.itunes.apple.com'
+2228.4  19 | 2020-12-11T04:17:32+0000 [stdout#info] Result for b'bag.itunes.apple.com' is ['23.198.133.66']
+2229.0 TEL | [114] Running: sudo -n echo -n
+2229.1 TEL | [114] ran in 0.10 secs.
+2229.8 TEL | (proxy checking local liveness)
+2229.9  19 | 2020-12-11T04:17:34+0000 [Poll#info] Checkpoint
+2234.1  28 | c : DNS request from ('172.31.140.84', 65140) to None: 31 bytes
+2234.1  28 | c : DNS request from ('172.31.140.84', 63909) to None: 31 bytes
+2235.1  19 | 2020-12-11T04:17:38+0000 [stdout#info] AAAA query, sending back A instead: b'music.163.com'
+2235.1  19 | 2020-12-11T04:17:38+0000 [stdout#info] A query: b'music.163.com'
+2235.1  19 | 2020-12-11T04:17:38+0000 [stdout#info] A query: b'music.163.com'
+2235.1  19 | 2020-12-11T04:17:38+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+2235.1  19 | 2020-12-11T04:17:38+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+2240.9  28 | c : DNS request from ('172.31.140.84', 49753) to None: 37 bytes
+2241.0  19 | 2020-12-11T04:17:45+0000 [stdout#info] A query: b'su.itunes.apple.com'
+2241.1  19 | 2020-12-11T04:17:45+0000 [stdout#info] Result for b'su.itunes.apple.com' is ['104.127.195.28']
+2244.4  28 | c : DNS request from ('172.31.140.84', 60502) to None: 44 bytes
+2244.5  19 | 2020-12-11T04:17:48+0000 [stdout#info] A query: b'configuration.ls.apple.com'
+2244.5  19 | 2020-12-11T04:17:48+0000 [stdout#info] Result for b'configuration.ls.apple.com' is ['104.127.197.12']
+2259.2 TEL | [115] Running: sudo -n echo -n
+2259.2 TEL | [115] ran in 0.03 secs.
+2259.9 TEL | (proxy checking local liveness)
+2259.9  19 | 2020-12-11T04:18:04+0000 [Poll#info] Checkpoint
+2269.8  28 | c : DNS request from ('172.31.140.84', 55050) to None: 38 bytes
+2269.9  19 | 2020-12-11T04:18:14+0000 [stdout#info] A query: b'time-macos.apple.com'
+2269.9  19 | 2020-12-11T04:18:14+0000 [stdout#info] Result for b'time-macos.apple.com' is ['17.253.68.253', '17.253.84.251', '17.253.84.253', '17.253.84.123', '17.253.68.251']
+2270.6  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+2270.7  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+2271.1  28 | c : DNS request from ('172.31.140.84', 60324) to None: 44 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 59695) to None: 41 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 57574) to None: 31 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 64582) to None: 40 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 62807) to None: 50 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 50439) to None: 30 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 56008) to None: 42 bytes
+2271.2  28 | c : DNS request from ('172.31.140.84', 53238) to None: 34 bytes
+2272.1  28 | c : DNS request from ('172.31.140.84', 60324) to None: 44 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 59695) to None: 41 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 57574) to None: 31 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 64582) to None: 40 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 62807) to None: 50 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 50439) to None: 30 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 56008) to None: 42 bytes
+2272.2  28 | c : DNS request from ('172.31.140.84', 53238) to None: 34 bytes
+2272.7  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+2273.5  28 | c : DNS request from ('172.31.140.84', 50922) to None: 34 bytes
+2273.5  28 | c : DNS request from ('172.31.140.84', 50922) to None: 34 bytes
+2274.7  28 | c : DNS request from ('172.31.140.84', 62378) to None: 59 bytes
+2275.6  28 | c : DNS request from ('172.31.140.84', 49403) to None: 44 bytes
+2276.6  28 | c : DNS request from ('172.31.140.84', 49403) to None: 44 bytes
+2280.6 TEL | [25] SSH port forward (socks and proxy poll): exit 255
+2280.7 TEL | END SPAN runner.py:726(wait_for_exit) 2261.4s
+2280.7 >>> | 
+2280.7 >>> | Background process (SSH port forward (socks and proxy poll)) exited with return code 255. Command was:
+2280.7 >>> |   ssh -N -oServerAliveInterval=1 -oServerAliveCountMax=10 -F /dev/null -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -q -p 53728 telepresence@127.0.0.1 -L127.0.0.1:53743:127.0.0.1:9050 -R9055:127.0.0.1:53744
+2280.7 >>> | 
+2280.7 >>> | 
+2280.7 >>> | Proxy to Kubernetes exited. This is typically due to a lost connection.
+2280.7 >>> | 
+2280.7 TEL | EXITING with status code 255
+2280.7 >>> | Exit cleanup in progress
+2280.7 TEL | (Cleanup) Terminate local process
+2280.7 TEL | Killing local process...
+2281.7 TEL | Main process (bash --norc)
+2281.7 TEL | (Cleanup) Kill BG process [28] sshuttle
+2281.7 TEL |  exited with code -9.
+2281.7  28 | >> pfctl -a sshuttle6-12300 -F all
+2281.7 TEL | (Cleanup) Unmount remote filesystem
+2281.7 TEL | [116] Running: umount -f /tmp/tel-5_ikehs5/fs
+2281.7  28 | >> pfctl -X 17726088252280118357
+2281.7  28 | >> pfctl -a sshuttle-12300 -F all
+2281.7  28 | >> pfctl -X 17726088252280117589
+2289.4 TEL | [117] Running: sudo -n echo -n
+2289.4 TEL | [117] ran in 0.05 secs.
+2313.8  28 | Connection to 127.0.0.1 closed by remote host.
+2313.8 TEL | [28] sshuttle: exit -15
+2313.8  20 | E1211 12:18:53.373989   59170 portforward.go:233] lost connection to pod
+2313.8 TEL | [20] kubectl port-forward: exit 0
+2458.5 TEL | [118] Running: sudo -n echo -n
+2458.5 TEL | [118] ran in 0.03 secs.
+2488.7 TEL | [119] Running: sudo -n echo -n
+2488.7 TEL | [119] ran in 0.03 secs.
+2783.6 TEL | [120] Running: sudo -n echo -n
+2783.7 TEL | [120] ran in 0.17 secs.
+2813.9 TEL | [121] Running: sudo -n echo -n
+2813.9 TEL | [121] ran in 0.03 secs.
+3800.8 116 | umount: /tmp/tel-5_ikehs5/fs: not currently mounted
+3800.8 TEL | [116] exit 1 in 1519.09 secs.
+3800.8 TEL | (Cleanup) Unmount remote filesystem failed:
+3800.8 TEL | (Cleanup)   Command '['umount', '-f', '/tmp/tel-5_ikehs5/fs']' returned non-zero exit status 1.
+3800.8 TEL | (Cleanup) Kill BG process [25] SSH port forward (socks and proxy poll)
+3800.8 TEL | (Cleanup) Kill Web server for proxy poll
+3801.0 TEL | (Cleanup) Kill BG process [20] kubectl port-forward
+3801.0 TEL | (Cleanup) Kill BG process [19] kubectl logs
+3801.0 TEL | [19] kubectl logs: exit -15
+3801.0 TEL | Background process (kubectl logs) exited with return code -15. Command was:
+3801.0 TEL |   kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system logs -f telepresence-1607658019-53387-59147-d6fbdbbb5-plxj5 --container telepresence-1607658019-53387-59147 --tail=10
+3801.0 TEL | 
+3801.0 TEL | Recent output was:
+3801.0 TEL |   2020-12-11T04:17:38+0000 [stdout#info] A query: b'music.163.com'
+3801.0 TEL |   2020-12-11T04:17:38+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+3801.0 TEL |   2020-12-11T04:17:38+0000 [stdout#info] Result for b'music.163.com' is ['103.126.92.133', '103.126.92.132']
+3801.0 TEL |   2020-12-11T04:17:45+0000 [stdout#info] A query: b'su.itunes.apple.com'
+3801.0 TEL |   2020-12-11T04:17:45+0000 [stdout#info] Result for b'su.itunes.apple.com' is ['104.127.195.28']
+3801.0 TEL |   2020-12-11T04:17:48+0000 [stdout#info] A query: b'configuration.ls.apple.com'
+3801.0 TEL |   2020-12-11T04:17:48+0000 [stdout#info] Result for b'configuration.ls.apple.com' is ['104.127.197.12']
+3801.0 TEL |   2020-12-11T04:18:04+0000 [Poll#info] Checkpoint
+3801.0 TEL |   2020-12-11T04:18:14+0000 [stdout#info] A query: b'time-macos.apple.com'
+3801.0 TEL |   2020-12-11T04:18:14+0000 [stdout#info] Result for b'time-macos.apple.com' is ['17.253.68.253', '17.253.84.251', '17.253.84.253', '17.253.84.123', '17.253.68.251']
+3801.0 TEL | (Cleanup) Delete new deployment
+3801.0 >>> | Cleaning up Deployment telepresence-1607658019-53387-59147
+3801.0 TEL | [122] Running: kubectl --context kubernetes-admin@cluster.local --namespace kubesphere-system delete --ignore-not-found svc,deploy --selector=telepresence=c9fe9ee9227849cc8e79a2834937ae1e
+3814.5 TEL | [123] Running: sudo -n echo -n
+3814.6 TEL | [123] ran in 0.06 secs.
+3833.1 122 | deployment.apps "telepresence-1607658019-53387-59147" deleted
+3833.2 TEL | [122] ran in 32.14 secs.
+3833.2 TEL | (Cleanup) Show version notice
+3833.2 >>> | 
+3833.2 >>> | Telepresence 0.108 is available (you're running 0.105). https://www.telepresence.io/reference/changelog
+3833.2 TEL | (Cleanup) Kill sudo privileges holder
+3833.2 TEL | (Cleanup) Stop time tracking
+3833.2 TEL | END SPAN main.py:40(main) 3833.1s
+3833.2 TEL | (Cleanup) Remove temporary directory
+3833.3 TEL | (Cleanup) Save caches
+3833.6 TEL | (sudo privileges holder thread exiting)
