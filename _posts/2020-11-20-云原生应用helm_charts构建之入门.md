@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title:  云原生应用Helm应用helm_charts入篇
+title:  云原生应用Helm应用helm_charts入门篇
 categories: [document]
 tags: [istio, helm, charts, kubernetes]
 ---
