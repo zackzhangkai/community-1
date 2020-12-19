@@ -16,4 +16,7 @@ tags: [cicd,devops]
 
 [官网代码示例](https://docs.github.com/cn/free-pro-team@latest/actions)
 
+[ssh模块](https://github.com/appleboy/ssh-action
+)
+
 [基于KubeSphere自动完成ci工作](https://kubesphere.com.cn/forum/d/2971-github-actioncikubesphere)
