@@ -37,10 +37,11 @@ controller 有很多，比如：
 
 本质上是生成nginx的配置文件，代理流量到后端。
 
-查看配置文件，在ingress controller的pod中执行`nginx -T`，如：
+查看配置文件
 
 ```bash
-kubectl -n kubesphere-controls-system exec kubesphere-router-ns1-6979bffc79-c4fqm -- nginx -T 
+# kubectl -n kubesphere-controls-system exec kubesphere-router-ns1-6979bffc79-c4fqm -- cat /etc/nginx/nginx.conf
+
 ...
 http {
     # Global filters
@@ -88,3 +89,5 @@ http {
 ```
 
 `nginx.ingress.kubernetes.io/service-upstream` 默认值为false，将该ingress中定义的service的endpoint的IP，即pod的IP作为nginx的后端，此时可以利用nginx本身的访问策略，如轮循/最小连接/hash等；若为true，则将service的ip作为nginx controller的后端，此时无法使用nginx本身的访问策略，转而使用了service ipvs的功能。[关于Nginx Annotation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#service-upstream)
+
+`nginx.ingress.kubernetes.io/service-upstream` Rewrite Http Header的Host
