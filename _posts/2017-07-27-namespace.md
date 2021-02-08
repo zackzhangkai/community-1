@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  namespace
-date:   2015-07-27  
+date:   2017-07-27  
 categories: linux
 tag:
   - ns
