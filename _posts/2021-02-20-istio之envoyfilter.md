@@ -215,7 +215,7 @@ EnvoyFilter.ApplyTo
 EnvoyFilter.PatchContext
 ```
 
-## 看三个示例
+## 几个示例
 
 示例一：
 
@@ -331,6 +331,34 @@ spec:
       component: ks-router
       project: test
       tier: backend
+```
+
+示例，istio 1.6.10，添加外部访问IP
+
+```bash
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  annotations:
+  name: use-remote-address
+  namespace: istio-system
+spec:
+  configPatches:
+  - applyTo: NETWORK_FILTER
+    match:
+      context: SIDECAR_OUTBOUND
+      listener:
+        filterChain:
+          filter:
+            name: envoy.http_connection_manager
+    patch:
+      operation: MERGE
+      value:
+        typedConfig:
+          '@type': type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
+          skip_xff_append: false
+          use_remote_address: true
+          xff_num_trusted_hops: 10
 ```
 
 <https://zhuanlan.zhihu.com/p/351690052>  
