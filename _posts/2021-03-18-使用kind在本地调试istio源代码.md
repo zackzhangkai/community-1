@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title:  一次Go编译失败引发的思考
+title: 使用kind在本地调试istio源代码
 categories: [document]
 tags: [istio go]
 ---
@@ -9,6 +9,10 @@ tags: [istio go]
 {:toc}
 
 ## 前言
+
+k8s sig开发了kind用于k8s开发，但是国内的环境让这个东西成为空谈。但是其实是有解决方法的，我们同样可以使用。本文告诉你如何使用gland + kind在mac上本地开发与调试istio。
+
+## 背景
 
 最近在本地调试istio，由于代码是master分支，而安装的集群是istio 1.6版本老版本；
 
